@@ -8,7 +8,6 @@ int last_index;
 // Bubble sort algorithm
 for(last_index = 9; last_index > 0; last_index--) {
     for(index = 0; index < last_index; index++) {
-        // Swap if current element is greater than next element
         if(arr[index] > arr[index + 1]) {
             int temp = arr[index];
             arr[index] = arr[index + 1];
