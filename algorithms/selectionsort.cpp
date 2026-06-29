@@ -1,7 +1,8 @@
 #include <iostream>
-using namespace std;
+#include "utils.h"
 
-void selectionSort(int arr[], int n) {
+template <typename T>
+void selectionSort(T arr[], int n) {
     // Outer loop for checking the current position
     for (int i = 0; i < n; i++) {
         // Pick the current position for the min value.
@@ -15,29 +16,22 @@ void selectionSort(int arr[], int n) {
         }
 
         // Swap
-        int temp = arr[i];
+        T temp = arr[i];
         arr[i] = arr[min];
         arr[min] = temp;
     }
-}
-
-void printArray(int arr[], int n) {
-    for (int i = 0; i < n; i++) {
-        cout << arr[i] << " ";
-    }
-    cout << endl;
 }
 
 int main() {
     int array[] = {50, 10, 21, 7, 9, 78, 36, 123};
     int n = sizeof(array) / sizeof(array[0]);
 
-    cout << "Original array: ";
+    std::cout << "Original array: ";
     printArray(array, n);
 
     selectionSort(array, n);
 
-    cout << "Sorted array: ";
+    std::cout << "Sorted array: ";
     printArray(array, n);
 
     return 0;

@@ -1,10 +1,9 @@
 #include <iostream>
-#define msize 7
-using namespace std;
 
+template <typename T, size_t msize = 7>
 class Stack {
 private:
-    int stackArr[msize];
+    T stackArr[msize];
     int top; //if value is -1, that means the stack is empty
 
 public:
@@ -12,37 +11,37 @@ public:
         top = -1;
     }
 
-    void push(int item) {
+    void push(T item) {
         //validation for full stack
         if (top == msize - 1) {
-            cout << "***overflow***" << endl;
+            std::cout << "***overflow***" << std::endl;
             return;
         }
         stackArr[++top] = item;
-        cout << "pushed element " << item << endl;
+        std::cout << "pushed element " << item << std::endl;
     }
 
-    int pop() {
+    T pop() {
         //validation for empty stack
         if (top == -1) {
-            cout << "***underflow***" << endl;
-            return -1;
+            std::cout << "***underflow***" << std::endl;
+            return T();
         }
         return stackArr[top--];
     }
 
-    int peek() const {
+    T peek() const {
         //validation for empty stack
         if (top == -1) {
-            cout << "***underflow***" << endl;
-            return -1;
+            std::cout << "***underflow***" << std::endl;
+            return T();
         }
         return stackArr[top];
     }
 };
 
 int main() {
-    Stack s;
+    Stack<int> s;
     s.pop();
     s.peek();
     s.push(1);
@@ -53,9 +52,9 @@ int main() {
     s.push(6);
     s.push(7);
     s.push(8);
-    cout << "top element : " << s.peek() << endl;
-    cout << "poped element : " << s.pop() << endl;
-    cout << "top element : " << s.peek() << endl;
+    std::cout << "top element : " << s.peek() << std::endl;
+    std::cout << "poped element : " << s.pop() << std::endl;
+    std::cout << "top element : " << s.peek() << std::endl;
 
     return 0;
 }

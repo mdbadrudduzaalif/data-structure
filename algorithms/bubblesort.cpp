@@ -1,11 +1,12 @@
 #include <iostream>
-using namespace std;
+#include "utils.h"
 
-void bubbleSort(int arr[], int n) {
+template <typename T>
+void bubbleSort(T arr[], int n) {
     for (int last_index = n - 1; last_index > 0; last_index--) {
         for (int index = 0; index < last_index; index++) {
             if (arr[index] > arr[index + 1]) {
-                int temp = arr[index];
+                T temp = arr[index];
                 arr[index] = arr[index + 1];
                 arr[index + 1] = temp;
             }
@@ -13,23 +14,16 @@ void bubbleSort(int arr[], int n) {
     }
 }
 
-void printArray(int arr[], int n) {
-    for (int i = 0; i < n; i++) {
-        cout << arr[i] << " ";
-    }
-    cout << endl;
-}
-
 int main() {
     int arr[] = {5, 6, 8, 4, 1, 2, 3, 9, 7, 10};
     int n = sizeof(arr) / sizeof(arr[0]);
 
-    cout << "Original array: ";
+    std::cout << "Original array: ";
     printArray(arr, n);
 
     bubbleSort(arr, n);
 
-    cout << "Sorted array: ";
+    std::cout << "Sorted array: ";
     printArray(arr, n);
 
     return 0;
