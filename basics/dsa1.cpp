@@ -1,20 +1,25 @@
-#include<iostream>
-using namespace std;
-int main(){
+#include <iostream>
+#include <vector>
 
-int arr[20]={5,89,69,25,45,14,23,54,87,59,6,4,2,8,7,4,3,6,1,4};
-int ocount = 0;
-int ecount = 0;
-for (int i = 0; i < 20; i++)
-{
-   if (arr[i] % 2 == 0){
-    ecount++;
-   }
-   else{
-    ocount++;
-   }
+void countOddEven(const std::vector<int>& arr) {
+    int oddCount = 0;
+    int evenCount = 0;
+
+    for (int num : arr) {
+        if (num % 2 == 0) {
+            evenCount++;
+        } else {
+            oddCount++;
+        }
+    }
+
+    std::cout << "odd : " << oddCount << std::endl;
+    std::cout << "even : " << evenCount << std::endl;
 }
-cout<<"odd : "<<ocount<<endl;
-cout<<"even : "<<ecount<<endl;
 
+int main() {
+    std::vector<int> arr = {5, 89, 69, 25, 45, 14, 23, 54, 87, 59, 6, 4, 2, 8, 7, 4, 3, 6, 1, 4};
+    countOddEven(arr);
+
+    return 0;
 }

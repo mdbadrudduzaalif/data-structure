@@ -14,5 +14,5 @@ add_executable(insertion_sort algorithms/insertion_sort.cpp)
 add_executable(selectionsort algorithms/selectionsort.cpp)
 
 # Data Structures
-add_executable(queue data_structures/24-59369-3_que.cpp)
-add_executable(stack data_structures/24-59369-3_stack.cpp)
+add_executable(queue data_structures/queue.cpp)
+add_executable(stack data_structures/stack.cpp)
