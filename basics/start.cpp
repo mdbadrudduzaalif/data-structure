@@ -1,18 +1,26 @@
 #include <iostream>
+#include <utility>
+#include <cassert>
 
-void printSumAndDifference(int a, int b) {
+std::pair<int, int> getSumAndDifference(int a, int b) {
     int sum = a + b;
     int diff = b - a;
-
-    std::cout << sum << std::endl;
-    std::cout << diff << std::endl; // Added newline for cleaner output
+    return {sum, diff};
 }
 
 int main() {
     int a = 20;
     int b = 40;
 
-    printSumAndDifference(a, b);
+    std::pair<int, int> result = getSumAndDifference(a, b);
+
+    std::cout << result.first << std::endl;
+    std::cout << result.second << std::endl;
+
+    assert(result.first == 60);
+    assert(result.second == 20);
+
+    std::cout << "All start tests passed." << std::endl;
 
     return 0;
 }
