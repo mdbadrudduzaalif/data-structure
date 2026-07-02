@@ -2,19 +2,11 @@
 #include <vector>
 #include <utility>
 #include <cassert>
+#include <algorithm>
 
 std::pair<int, int> countOddEven(const std::vector<int>& arr) {
-    int oddCount = 0;
-    int evenCount = 0;
-
-    for (int num : arr) {
-        if (num % 2 == 0) {
-            evenCount++;
-        } else {
-            oddCount++;
-        }
-    }
-
+    int evenCount = std::count_if(arr.begin(), arr.end(), [](int num) { return num % 2 == 0; });
+    int oddCount = arr.size() - evenCount;
     return {oddCount, evenCount};
 }
 

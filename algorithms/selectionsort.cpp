@@ -13,9 +13,7 @@ void selectionSort(T arr[], int n) {
                 min = j;
             }
         }
-        T temp = arr[i];
-        arr[i] = arr[min];
-        arr[min] = temp;
+        std::swap(arr[i], arr[min]);
     }
 }
 

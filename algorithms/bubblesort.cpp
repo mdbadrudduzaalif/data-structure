@@ -10,9 +10,7 @@ void bubbleSort(T arr[], int n) {
         bool swapped = false;
         for (int index = 0; index < last_index; index++) {
             if (arr[index] > arr[index + 1]) {
-                T temp = arr[index];
-                arr[index] = arr[index + 1];
-                arr[index + 1] = temp;
+                std::swap(arr[index], arr[index + 1]);
                 swapped = true;
             }
         }

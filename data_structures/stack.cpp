@@ -7,44 +7,41 @@ template <typename T, size_t msize = 7>
 class Stack {
 private:
     std::vector<T> stackArr;
-    int top; //if value is -1, that means the stack is empty
 
 public:
     Stack() {
-        stackArr.resize(msize);
-        top = -1;
+        stackArr.reserve(msize);
     }
 
     void push(T item) {
-        //validation for full stack
-        if (top == static_cast<int>(msize) - 1) {
+        if (stackArr.size() == msize) {
             std::cerr << "*** overflow ***" << std::endl;
             return;
         }
-        stackArr[++top] = item;
+        stackArr.push_back(item);
         std::cout << "pushed element " << item << std::endl;
     }
 
     T pop() {
-        //validation for empty stack
-        if (top == -1) {
+        if (stackArr.empty()) {
             std::cerr << "*** underflow ***" << std::endl;
             throw std::underflow_error("Stack is empty");
         }
-        return stackArr[top--];
+        T item = stackArr.back();
+        stackArr.pop_back();
+        return item;
     }
 
     T peek() const {
-        //validation for empty stack
-        if (top == -1) {
+        if (stackArr.empty()) {
             std::cerr << "*** underflow ***" << std::endl;
             throw std::underflow_error("Stack is empty");
         }
-        return stackArr[top];
+        return stackArr.back();
     }
 
     bool isEmpty() const {
-        return top == -1;
+        return stackArr.empty();
     }
 };
 

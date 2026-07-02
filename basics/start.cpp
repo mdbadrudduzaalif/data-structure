@@ -2,7 +2,7 @@
 #include <utility>
 #include <cassert>
 
-std::pair<int, int> getSumAndDifference(int a, int b) {
+std::pair<int, int> getSumAndDifference(const int a, const int b) {
     int sum = a + b;
     int diff = b - a;
     return {sum, diff};

@@ -7,89 +7,60 @@ template <typename T, size_t msize = 7>
 class Queue {
 private:
     std::vector<T> queueArr;
-    int front; // if value is -1, the queue is empty
-    int rear;  // if value is -1, the queue is empty
+    size_t frontIndex;
+    size_t count;
 
 public:
-    Queue() {
+    Queue() : frontIndex(0), count(0) {
         queueArr.resize(msize);
-        front = -1;
-        rear = -1;
     }
 
     void enqueue(T item) {
-        // check overflow for circular queue
-        if ((front == 0 && rear == static_cast<int>(msize) - 1) || (rear == (front - 1 + static_cast<int>(msize)) % static_cast<int>(msize))) {
+        if (count == msize) {
             std::cerr << "*** overflow (queue is full) ***" << std::endl;
             return;
         }
 
-        if (front == -1) {      // first element
-            front = 0;
-            rear = 0;
-        } else if (rear == static_cast<int>(msize) - 1 && front != 0) {
-            rear = 0;
-        } else {
-            rear++;
-        }
-
-        queueArr[rear] = item;
+        size_t rearIndex = (frontIndex + count) % msize;
+        queueArr[rearIndex] = item;
+        count++;
         std::cout << "Enqueued element: " << item << std::endl;
     }
 
     T dequeue() {
-        // check underflow
-        if (front == -1) {
+        if (count == 0) {
             std::cerr << "*** underflow (queue is empty) ***" << std::endl;
             throw std::underflow_error("Queue is empty");
         }
 
-        T item = queueArr[front];
-
-        // if queue becomes empty again, reset indices
-        if (front == rear) {
-            front = -1;
-            rear  = -1;
-        } else if (front == static_cast<int>(msize) - 1) {
-            front = 0;
-        } else {
-            front++;
-        }
-
+        T item = queueArr[frontIndex];
+        frontIndex = (frontIndex + 1) % msize;
+        count--;
         std::cout << "Dequeued element: " << item << std::endl;
         return item;
     }
 
     bool isEmpty() const {
-        return front == -1;
+        return count == 0;
     }
 
     T peek() const {
-        if (front == -1) {
+        if (count == 0) {
             std::cerr << "*** underflow (queue is empty) ***" << std::endl;
             throw std::underflow_error("Queue is empty");
         }
-        return queueArr[front];
+        return queueArr[frontIndex];
     }
 
     void display() const {
-        if (front == -1) {
+        if (count == 0) {
             std::cout << "Queue is empty" << std::endl;
             return;
         }
 
         std::cout << "Display elements: ";
-        if (rear >= front) {
-            for (int i = front; i <= rear; i++) {
-                std::cout << queueArr[i] << " ";
-            }
-        } else {
-            for (int i = front; i < static_cast<int>(msize); i++) {
-                std::cout << queueArr[i] << " ";
-            }
-            for (int i = 0; i <= rear; i++) {
-                std::cout << queueArr[i] << " ";
-            }
+        for (size_t i = 0; i < count; i++) {
+            std::cout << queueArr[(frontIndex + i) % msize] << " ";
         }
         std::cout << std::endl;
     }

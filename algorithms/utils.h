@@ -5,7 +5,7 @@
 #include <vector>
 
 template <typename T>
-void printArray(T arr[], int n) {
+void printArray(const T arr[], int n) {
     for (int i = 0; i < n; i++) {
         std::cout << arr[i] << " ";
     }
