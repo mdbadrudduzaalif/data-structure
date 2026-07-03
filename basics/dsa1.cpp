@@ -3,11 +3,19 @@
 #include <utility>
 #include <cassert>
 
+/**
+ * @brief Counts the number of odd and even numbers in a given vector.
+ *
+ * @param arr The vector of integers.
+ * @return A std::pair where the first element is the number of odd integers
+ *         and the second element is the number of even integers.
+ */
 std::pair<int, int> countOddEven(const std::vector<int>& arr) {
     int oddCount = 0;
     int evenCount = 0;
 
     for (int num : arr) {
+        // If number is perfectly divisible by 2, it is even.
         if (num % 2 == 0) {
             evenCount++;
         } else {

@@ -4,49 +4,66 @@
 #include <algorithm>
 #include "utils.h"
 
+/**
+ * @brief Sorts a C-style array using the Selection Sort algorithm.
+ *
+ * @tparam T The type of elements in the array.
+ * @param arr The C-style array to sort.
+ * @param size The number of elements in the array.
+ */
 template <typename T>
-void selectionSort(T arr[], int n) {
-    for (int i = 0; i < n; i++) {
-        int min = i;
-        for (int j = i + 1; j < n; j++) {
-            if (arr[min] > arr[j]) {
-                min = j;
+void selectionSort(T arr[], int size) {
+    for (int i = 0; i < size; i++) {
+        // Find the minimum element in unsorted array
+        int min_idx = i;
+        for (int j = i + 1; j < size; j++) {
+            if (arr[min_idx] > arr[j]) {
+                min_idx = j;
             }
         }
+        // Swap the found minimum element with the first element
         T temp = arr[i];
-        arr[i] = arr[min];
-        arr[min] = temp;
+        arr[i] = arr[min_idx];
+        arr[min_idx] = temp;
     }
 }
 
+/**
+ * @brief Sorts a std::vector using the Selection Sort algorithm.
+ *
+ * @tparam T The type of elements in the vector.
+ * @param arr The std::vector to sort.
+ */
 template <typename T>
 void selectionSort(std::vector<T>& arr) {
-    int n = arr.size();
-    for (int i = 0; i < n; i++) {
-        int min = i;
-        for (int j = i + 1; j < n; j++) {
-            if (arr[min] > arr[j]) {
-                min = j;
+    int size = arr.size();
+    for (int i = 0; i < size; i++) {
+        // Find the minimum element in unsorted array
+        int min_idx = i;
+        for (int j = i + 1; j < size; j++) {
+            if (arr[min_idx] > arr[j]) {
+                min_idx = j;
             }
         }
-        std::swap(arr[i], arr[min]);
+        // Swap the found minimum element with the first element
+        std::swap(arr[i], arr[min_idx]);
     }
 }
 
 
 int main() {
     int array[] = {50, 10, 21, 7, 9, 78, 36, 123};
-    int n = sizeof(array) / sizeof(array[0]);
+    int size = sizeof(array) / sizeof(array[0]);
 
     std::cout << "Original array: ";
-    printArray(array, n);
+    printArray(array, size);
 
-    selectionSort(array, n);
+    selectionSort(array, size);
 
     std::cout << "Sorted array: ";
-    printArray(array, n);
+    printArray(array, size);
 
-    for (int i = 0; i < n - 1; ++i) {
+    for (int i = 0; i < size - 1; ++i) {
         assert(array[i] <= array[i + 1]);
     }
 
