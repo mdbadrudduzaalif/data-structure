@@ -3,6 +3,12 @@
 #include <cassert>
 #include <stdexcept>
 
+/**
+ * @brief A generic circular Queue data structure.
+ *
+ * @tparam T The type of elements in the queue.
+ * @tparam msize The maximum capacity of the queue.
+ */
 template <typename T, size_t msize = 7>
 class Queue {
 private:
@@ -11,17 +17,25 @@ private:
     int rear;  // if value is -1, the queue is empty
 
 public:
+    /**
+     * @brief Constructs an empty Queue.
+     */
     Queue() {
         queueArr.resize(msize);
         front = -1;
         rear = -1;
     }
 
+    /**
+     * @brief Adds an item to the rear of the queue.
+     *
+     * @param item The item to enqueue.
+     * @throws std::overflow_error if the queue is full.
+     */
     void enqueue(T item) {
         // check overflow for circular queue
         if ((front == 0 && rear == static_cast<int>(msize) - 1) || (rear == (front - 1 + static_cast<int>(msize)) % static_cast<int>(msize))) {
-            std::cerr << "*** overflow (queue is full) ***" << std::endl;
-            return;
+            throw std::overflow_error("Queue is full");
         }
 
         if (front == -1) {      // first element
@@ -37,10 +51,15 @@ public:
         std::cout << "Enqueued element: " << item << std::endl;
     }
 
+    /**
+     * @brief Removes and returns the item from the front of the queue.
+     *
+     * @return The dequeued item.
+     * @throws std::underflow_error if the queue is empty.
+     */
     T dequeue() {
         // check underflow
         if (front == -1) {
-            std::cerr << "*** underflow (queue is empty) ***" << std::endl;
             throw std::underflow_error("Queue is empty");
         }
 
@@ -60,18 +79,31 @@ public:
         return item;
     }
 
+    /**
+     * @brief Checks whether the queue is empty.
+     *
+     * @return True if the queue is empty, false otherwise.
+     */
     bool isEmpty() const {
         return front == -1;
     }
 
+    /**
+     * @brief Returns the item at the front without dequeuing it.
+     *
+     * @return The front item.
+     * @throws std::underflow_error if the queue is empty.
+     */
     T peek() const {
         if (front == -1) {
-            std::cerr << "*** underflow (queue is empty) ***" << std::endl;
             throw std::underflow_error("Queue is empty");
         }
         return queueArr[front];
     }
 
+    /**
+     * @brief Prints the elements of the queue from front to rear.
+     */
     void display() const {
         if (front == -1) {
             std::cout << "Queue is empty" << std::endl;
