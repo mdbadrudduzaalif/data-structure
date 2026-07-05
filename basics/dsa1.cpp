@@ -3,6 +3,12 @@
 #include <utility>
 #include <cassert>
 
+/**
+ * @brief Counts the number of odd and even numbers in a given vector.
+ *
+ * @param arr The vector of integers to process.
+ * @return std::pair<int, int> A pair containing the count of odd numbers (first) and even numbers (second).
+ */
 std::pair<int, int> countOddEven(const std::vector<int>& arr) {
     int oddCount = 0;
     int evenCount = 0;

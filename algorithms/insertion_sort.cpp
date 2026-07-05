@@ -3,6 +3,13 @@
 #include <cassert>
 #include "utils.h"
 
+/**
+ * @brief Sorts a C-style array using the Insertion Sort algorithm.
+ *
+ * @tparam T The type of elements in the array.
+ * @param arr The array to sort.
+ * @param n The number of elements in the array.
+ */
 template <typename T>
 void insertionSort(T arr[], int n) {
     for (int i = 1; i < n; i++) {
@@ -17,6 +24,12 @@ void insertionSort(T arr[], int n) {
     }
 }
 
+/**
+ * @brief Sorts a standard vector using the Insertion Sort algorithm.
+ *
+ * @tparam T The type of elements in the vector.
+ * @param arr The vector to sort.
+ */
 template <typename T>
 void insertionSort(std::vector<T>& arr) {
     int n = arr.size();
