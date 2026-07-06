@@ -11,7 +11,7 @@
  */
 std::pair<int, int> getSumAndDifference(int a, int b) {
     int sum = a + b;
-    int diff = b - a;
+    int diff = b - a; // Computes difference as b - a
     return {sum, diff};
 }
 
