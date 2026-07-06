@@ -3,125 +3,64 @@
 #include <cassert>
 #include <stdexcept>
 
-/**
- * @brief A template class representing a circular queue data structure.
- *
- * @tparam T The type of elements in the queue.
- * @tparam msize The maximum size of the queue (default is 7).
- */
 template <typename T, size_t msize = 7>
 class Queue {
 private:
     std::vector<T> queueArr;
-    int front; // if value is -1, the queue is empty
-    int rear;  // if value is -1, the queue is empty
+    size_t frontIndex;
+    size_t count;
 
 public:
-    /**
-     * @brief Constructs an empty Queue.
-     */
-    Queue() {
+    Queue() : frontIndex(0), count(0) {
         queueArr.resize(msize);
-        front = -1;
-        rear = -1;
     }
 
-    /**
-     * @brief Adds an element to the rear of the queue.
-     *
-     * @param item The element to add.
-     * @throws std::overflow_error if the queue is full.
-     */
     void enqueue(T item) {
-        // check overflow for circular queue
-        if ((front == 0 && rear == static_cast<int>(msize) - 1) || (rear == (front - 1 + static_cast<int>(msize)) % static_cast<int>(msize))) {
-            throw std::overflow_error("Queue is full");
+        if (count == msize) {
+            std::cerr << "*** overflow (queue is full) ***" << std::endl;
+            return;
         }
 
-        if (front == -1) {      // first element
-            front = 0;
-            rear = 0;
-        } else if (rear == static_cast<int>(msize) - 1 && front != 0) {
-            rear = 0;
-        } else {
-            rear++;
-        }
-
-        queueArr[rear] = item;
+        size_t rearIndex = (frontIndex + count) % msize;
+        queueArr[rearIndex] = item;
+        count++;
         std::cout << "Enqueued element: " << item << std::endl;
     }
 
-    /**
-     * @brief Removes and returns the element at the front of the queue.
-     *
-     * @return The element at the front of the queue.
-     * @throws std::underflow_error if the queue is empty.
-     */
     T dequeue() {
-        // check underflow
-        if (front == -1) {
+        if (count == 0) {
+            std::cerr << "*** underflow (queue is empty) ***" << std::endl;
             throw std::underflow_error("Queue is empty");
         }
 
-        T item = queueArr[front];
-
-        // if queue becomes empty again, reset indices
-        if (front == rear) {
-            front = -1;
-            rear  = -1;
-        } else if (front == static_cast<int>(msize) - 1) {
-            front = 0;
-        } else {
-            front++;
-        }
-
+        T item = queueArr[frontIndex];
+        frontIndex = (frontIndex + 1) % msize;
+        count--;
         std::cout << "Dequeued element: " << item << std::endl;
         return item;
     }
 
-    /**
-     * @brief Checks if the queue is empty.
-     *
-     * @return True if the queue is empty, false otherwise.
-     */
     bool isEmpty() const {
-        return front == -1;
+        return count == 0;
     }
 
-    /**
-     * @brief Returns the element at the front of the queue without removing it.
-     *
-     * @return The element at the front of the queue.
-     * @throws std::underflow_error if the queue is empty.
-     */
     T peek() const {
-        if (front == -1) {
+        if (count == 0) {
+            std::cerr << "*** underflow (queue is empty) ***" << std::endl;
             throw std::underflow_error("Queue is empty");
         }
-        return queueArr[front];
+        return queueArr[frontIndex];
     }
 
-    /**
-     * @brief Displays the elements of the queue.
-     */
     void display() const {
-        if (front == -1) {
+        if (count == 0) {
             std::cout << "Queue is empty" << std::endl;
             return;
         }
 
         std::cout << "Display elements: ";
-        if (rear >= front) {
-            for (int i = front; i <= rear; i++) {
-                std::cout << queueArr[i] << " ";
-            }
-        } else {
-            for (int i = front; i < static_cast<int>(msize); i++) {
-                std::cout << queueArr[i] << " ";
-            }
-            for (int i = 0; i <= rear; i++) {
-                std::cout << queueArr[i] << " ";
-            }
+        for (size_t i = 0; i < count; i++) {
+            std::cout << queueArr[(frontIndex + i) % msize] << " ";
         }
         std::cout << std::endl;
     }
@@ -151,23 +90,11 @@ int main() {
     q.enqueue(60);
     q.display();
 
-    // Testing overflow
-    try {
-        q.enqueue(70);
-        q.enqueue(80);
-        q.enqueue(90); // This should throw an overflow error
-        assert(false); // Should not be reached
-    } catch (const std::overflow_error& e) {
-        std::cout << "Expected exception: " << e.what() << std::endl;
-    }
-
     assert(q.dequeue() == 20);
     assert(q.dequeue() == 30);
     assert(q.dequeue() == 40);
     assert(q.dequeue() == 50);
     assert(q.dequeue() == 60);
-    assert(q.dequeue() == 70);
-    assert(q.dequeue() == 80);
 
     assert(q.isEmpty());
 

@@ -3,6 +3,7 @@ project(DSABasics)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+add_compile_options(-Wall -Wextra -Wpedantic)
 
 # Basics
 add_executable(dsa1 basics/dsa1.cpp)
