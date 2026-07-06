@@ -3,7 +3,7 @@
 #include <cassert>
 
 /**
- * @brief Calculates the sum and difference of two integers.
+ * @brief Calculates the sum and the difference of two integers.
  *
  * @param a The first integer.
  * @param b The second integer.
@@ -12,7 +12,7 @@
  */
 std::pair<int, int> getSumAndDifference(int a, int b) {
     int sum = a + b;
-    int diff = b - a;
+    int diff = b - a; // Computes difference as b - a
     return {sum, diff};
 }
 
