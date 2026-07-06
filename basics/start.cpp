@@ -2,17 +2,9 @@
 #include <utility>
 #include <cassert>
 
-/**
- * @brief Calculates the sum and the difference of two integers.
- *
- * @param a The first integer.
- * @param b The second integer.
- * @return A std::pair where the first element is the sum (a + b)
- *         and the second element is the difference (b - a).
- */
-std::pair<int, int> getSumAndDifference(int a, int b) {
+std::pair<int, int> getSumAndDifference(const int a, const int b) {
     int sum = a + b;
-    int diff = b - a; // Computes difference as b - a
+    int diff = b - a;
     return {sum, diff};
 }
 
