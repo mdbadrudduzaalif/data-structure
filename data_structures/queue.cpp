@@ -15,10 +15,9 @@ public:
         queueArr.resize(msize);
     }
 
-    void enqueue(T item) {
+    void enqueue(const T& item) {
         if (count == msize) {
-            std::cerr << "*** overflow (queue is full) ***" << std::endl;
-            return;
+            throw std::overflow_error("Queue is full");
         }
 
         size_t rearIndex = (frontIndex + count) % msize;
@@ -29,7 +28,6 @@ public:
 
     T dequeue() {
         if (count == 0) {
-            std::cerr << "*** underflow (queue is empty) ***" << std::endl;
             throw std::underflow_error("Queue is empty");
         }
 
@@ -46,7 +44,6 @@ public:
 
     T peek() const {
         if (count == 0) {
-            std::cerr << "*** underflow (queue is empty) ***" << std::endl;
             throw std::underflow_error("Queue is empty");
         }
         return queueArr[frontIndex];
@@ -88,6 +85,15 @@ int main() {
     q.enqueue(40);
     q.enqueue(50);
     q.enqueue(60);
+    q.enqueue(70);
+    q.enqueue(80);
+
+    try {
+        q.enqueue(90); // Overflow expected here
+    } catch (const std::overflow_error& e) {
+        std::cout << "Expected exception: " << e.what() << std::endl;
+    }
+
     q.display();
 
     assert(q.dequeue() == 20);
@@ -95,6 +101,8 @@ int main() {
     assert(q.dequeue() == 40);
     assert(q.dequeue() == 50);
     assert(q.dequeue() == 60);
+    assert(q.dequeue() == 70);
+    assert(q.dequeue() == 80);
 
     assert(q.isEmpty());
 
