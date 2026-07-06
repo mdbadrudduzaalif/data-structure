@@ -4,6 +4,13 @@
 #include <algorithm>
 #include "utils.h"
 
+/**
+ * @brief Sorts a C-style array using the Selection Sort algorithm.
+ *
+ * @tparam T The type of elements in the array.
+ * @param arr The array to be sorted.
+ * @param n The number of elements in the array.
+ */
 template <typename T>
 void selectionSort(T arr[], int n) {
     for (int i = 0; i < n; i++) {
@@ -17,6 +24,12 @@ void selectionSort(T arr[], int n) {
     }
 }
 
+/**
+ * @brief Sorts a std::vector using the Selection Sort algorithm.
+ *
+ * @tparam T The type of elements in the vector.
+ * @param arr The vector to be sorted.
+ */
 template <typename T>
 void selectionSort(std::vector<T>& arr) {
     int n = arr.size();

@@ -4,6 +4,13 @@
 #include <algorithm>
 #include "utils.h"
 
+/**
+ * @brief Sorts a C-style array using the Bubble Sort algorithm.
+ *
+ * @tparam T The type of elements in the array.
+ * @param arr The array to be sorted.
+ * @param n The number of elements in the array.
+ */
 template <typename T>
 void bubbleSort(T arr[], int n) {
     for (int last_index = n - 1; last_index > 0; last_index--) {
@@ -18,6 +25,12 @@ void bubbleSort(T arr[], int n) {
     }
 }
 
+/**
+ * @brief Sorts a std::vector using the Bubble Sort algorithm.
+ *
+ * @tparam T The type of elements in the vector.
+ * @param arr The vector to be sorted.
+ */
 template <typename T>
 void bubbleSort(std::vector<T>& arr) {
     if (arr.empty()) return;
