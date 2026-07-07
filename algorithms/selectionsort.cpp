@@ -13,6 +13,7 @@
  */
 template <typename T>
 void selectionSort(T arr[], int n) {
+    if (n <= 1 || arr == nullptr) return;
     for (int i = 0; i < n; i++) {
         int min = i;
         for (int j = i + 1; j < n; j++) {
@@ -32,6 +33,7 @@ void selectionSort(T arr[], int n) {
  */
 template <typename T>
 void selectionSort(std::vector<T>& arr) {
+    if (arr.size() <= 1) return;
     int n = arr.size();
     for (int i = 0; i < n; i++) {
         int min = i;

@@ -13,6 +13,7 @@
  */
 template <typename T>
 void insertionSort(T arr[], int n) {
+    if (n <= 1 || arr == nullptr) return;
     for (int i = 1; i < n; i++) {
         T key = arr[i];
         int j = i - 1;
@@ -33,6 +34,7 @@ void insertionSort(T arr[], int n) {
  */
 template <typename T>
 void insertionSort(std::vector<T>& arr) {
+    if (arr.size() <= 1) return;
     int n = arr.size();
     for (int i = 1; i < n; i++) {
         T key = arr[i];

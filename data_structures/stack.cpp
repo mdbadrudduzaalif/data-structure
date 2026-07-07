@@ -13,10 +13,9 @@ public:
         stackArr.reserve(msize);
     }
 
-    void push(T item) {
+    void push(const T& item) {
         if (stackArr.size() == msize) {
-            std::cerr << "*** overflow ***" << std::endl;
-            return;
+            throw std::overflow_error("Stack is full");
         }
         stackArr.push_back(item);
         std::cout << "pushed element " << item << std::endl;
@@ -24,7 +23,6 @@ public:
 
     T pop() {
         if (stackArr.empty()) {
-            std::cerr << "*** underflow ***" << std::endl;
             throw std::underflow_error("Stack is empty");
         }
         T item = stackArr.back();
@@ -34,7 +32,6 @@ public:
 
     T peek() const {
         if (stackArr.empty()) {
-            std::cerr << "*** underflow ***" << std::endl;
             throw std::underflow_error("Stack is empty");
         }
         return stackArr.back();
@@ -68,7 +65,11 @@ int main() {
     s.push(5);
     s.push(6);
     s.push(7);
-    s.push(8); // Overflow expected here
+    try {
+        s.push(8); // Overflow expected here
+    } catch (const std::overflow_error& e) {
+        std::cout << "Expected exception: " << e.what() << std::endl;
+    }
 
     assert(!s.isEmpty());
     assert(s.peek() == 7);

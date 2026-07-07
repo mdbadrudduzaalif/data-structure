@@ -19,12 +19,12 @@ A comprehensive audit and improvement pass has been completed for the Data Struc
 
 ## Deliverables Summary
 
-*   **Critical Issues Fixed**: Fixed weak error handling in `Queue` and `Stack` by throwing standard exceptions rather than just printing to `std::cerr` and returning unreliably. Fixed complex and hard-to-read modulo arithmetic in the circular queue.
-*   **Performance Improvements**: Simplified queue overflow calculation logic slightly optimizes arithmetic operations per enqueue. Added `#pragma once` in the header file.
-*   **Code Quality Improvements**: Standardized variable naming. Added Doxygen-style documentation across the entire project. Added in-depth inline comments explaining complex code.
-*   **Security Improvements**: Implemented robust bounds checking through exceptions on full/empty states for Queue and Stack classes, preventing buffer overflows or undefined behavior if called erroneously by external modules.
+*   **Critical Issues Fixed**: Fixed weak error handling in `Queue` and `Stack` by throwing `std::overflow_error` and `std::underflow_error` rather than just printing to `std::cerr` and returning unreliably. Fixed complex and hard-to-read modulo arithmetic in the circular queue. Added bounds/null validation to array processing algorithms.
+*   **Performance Improvements**: Simplified queue overflow calculation logic slightly optimizes arithmetic operations per enqueue. Added `#pragma once` in the header file. Passed objects by constant reference (`const T&`) instead of by value where applicable to avoid unnecessary copies.
+*   **Code Quality Improvements**: Standardized variable naming. Added Doxygen-style documentation across the entire project. Added in-depth inline comments explaining complex code. Added early return conditions in algorithms for cleaner execution.
+*   **Security Improvements**: Implemented robust bounds checking through exceptions on full/empty states for Queue and Stack classes. Added null pointer checks and array length validations to sorting algorithms and utilities to prevent invalid memory accesses.
 *   **Design/Architecture Improvements**: Cleaned up the project root by removing obsolete, unused duplications, enforcing the cleanly segregated `basics/`, `algorithms/`, and `data_structures/` folder structure.
-*   **Technical Debt Removed**: 9 duplicate, unorganized C++ files removed from the root.
+*   **Technical Debt Removed**: 9 duplicate, unorganized C++ files removed from the root. Removed all `std::cerr` error traces mixed with actual state logic in classes.
 
 ## Remaining Recommendations
 1.  **Unit Testing Framework**: Consider adopting a standard C++ testing framework like Google Test (gtest) or Catch2, rather than relying on simple `assert()` statements and standard output inspection within `main()` functions.

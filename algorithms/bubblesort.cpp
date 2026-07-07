@@ -13,6 +13,7 @@
  */
 template <typename T>
 void bubbleSort(T arr[], int n) {
+    if (n <= 1 || arr == nullptr) return;
     for (int last_index = n - 1; last_index > 0; last_index--) {
         bool swapped = false;
         for (int index = 0; index < last_index; index++) {
@@ -33,7 +34,7 @@ void bubbleSort(T arr[], int n) {
  */
 template <typename T>
 void bubbleSort(std::vector<T>& arr) {
-    if (arr.empty()) return;
+    if (arr.size() <= 1) return;
     int n = arr.size();
     for (int last_index = n - 1; last_index > 0; last_index--) {
         bool swapped = false;
