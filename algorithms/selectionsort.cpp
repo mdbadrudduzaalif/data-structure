@@ -14,14 +14,16 @@
 template <typename T>
 void selectionSort(T arr[], int n) {
     if (n <= 1 || arr == nullptr) return;
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < n - 1; i++) {
         int min = i;
         for (int j = i + 1; j < n; j++) {
             if (arr[min] > arr[j]) {
                 min = j;
             }
         }
-        std::swap(arr[i], arr[min]);
+        if (min != i) {
+            std::swap(arr[i], arr[min]);
+        }
     }
 }
 
@@ -34,15 +36,17 @@ void selectionSort(T arr[], int n) {
 template <typename T>
 void selectionSort(std::vector<T>& arr) {
     if (arr.size() <= 1) return;
-    int n = arr.size();
-    for (int i = 0; i < n; i++) {
-        int min = i;
-        for (int j = i + 1; j < n; j++) {
+    size_t n = arr.size();
+    for (size_t i = 0; i < n - 1; i++) {
+        size_t min = i;
+        for (size_t j = i + 1; j < n; j++) {
             if (arr[min] > arr[j]) {
                 min = j;
             }
         }
-        std::swap(arr[i], arr[min]);
+        if (min != i) {
+            std::swap(arr[i], arr[min]);
+        }
     }
 }
 
@@ -75,6 +79,10 @@ int main() {
     for (size_t i = 0; i < vec.size() - 1; ++i) {
         assert(vec[i] <= vec[i + 1]);
     }
+
+    std::vector<int> empty_vec;
+    selectionSort(empty_vec);
+    assert(empty_vec.empty());
 
     std::cout << "All selectionSort tests passed." << std::endl;
 

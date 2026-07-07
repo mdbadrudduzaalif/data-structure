@@ -35,10 +35,10 @@ void bubbleSort(T arr[], int n) {
 template <typename T>
 void bubbleSort(std::vector<T>& arr) {
     if (arr.size() <= 1) return;
-    int n = arr.size();
-    for (int last_index = n - 1; last_index > 0; last_index--) {
+    size_t n = arr.size();
+    for (size_t last_index = n - 1; last_index > 0; last_index--) {
         bool swapped = false;
-        for (int index = 0; index < last_index; index++) {
+        for (size_t index = 0; index < last_index; index++) {
             if (arr[index] > arr[index + 1]) {
                 std::swap(arr[index], arr[index + 1]);
                 swapped = true;
@@ -78,6 +78,10 @@ int main() {
     for (size_t i = 0; i < vec.size() - 1; ++i) {
         assert(vec[i] <= vec[i + 1]);
     }
+
+    std::vector<int> empty_vec;
+    bubbleSort(empty_vec);
+    assert(empty_vec.empty());
 
     std::cout << "All bubbleSort tests passed." << std::endl;
 

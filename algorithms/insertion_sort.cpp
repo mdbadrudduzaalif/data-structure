@@ -35,10 +35,11 @@ void insertionSort(T arr[], int n) {
 template <typename T>
 void insertionSort(std::vector<T>& arr) {
     if (arr.size() <= 1) return;
-    int n = arr.size();
-    for (int i = 1; i < n; i++) {
+    size_t n = arr.size();
+    for (size_t i = 1; i < n; i++) {
         T key = arr[i];
-        int j = i - 1;
+        // Using ptrdiff_t since j can go below 0
+        std::ptrdiff_t j = i - 1;
 
         while (j >= 0 && arr[j] > key) {
             arr[j + 1] = arr[j];
@@ -77,6 +78,10 @@ int main() {
     for (size_t i = 0; i < vec.size() - 1; ++i) {
         assert(vec[i] <= vec[i + 1]);
     }
+
+    std::vector<int> empty_vec;
+    insertionSort(empty_vec);
+    assert(empty_vec.empty());
 
     std::cout << "All insertionSort tests passed." << std::endl;
     
