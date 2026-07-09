@@ -3,16 +3,31 @@
 #include <cassert>
 #include <stdexcept>
 
+/**
+ * @brief A generic stack implementation using std::vector.
+ *
+ * @tparam T The type of elements in the stack.
+ * @tparam msize The maximum size of the stack.
+ */
 template <typename T, size_t msize = 7>
 class Stack {
 private:
     std::vector<T> stackArr;
 
 public:
+    /**
+     * @brief Constructs an empty Stack.
+     */
     Stack() {
         stackArr.reserve(msize);
     }
 
+    /**
+     * @brief Adds an element to the top of the stack.
+     *
+     * @param item The element to push onto the stack.
+     * @throws std::overflow_error if the stack is full.
+     */
     void push(const T& item) {
         if (stackArr.size() == msize) {
             throw std::overflow_error("Stack is full");
@@ -21,6 +36,12 @@ public:
         std::cout << "pushed element " << item << std::endl;
     }
 
+    /**
+     * @brief Removes and returns the top element of the stack.
+     *
+     * @return The element at the top of the stack.
+     * @throws std::underflow_error if the stack is empty.
+     */
     T pop() {
         if (stackArr.empty()) {
             throw std::underflow_error("Stack is empty");
@@ -30,6 +51,12 @@ public:
         return item;
     }
 
+    /**
+     * @brief Returns the top element without removing it.
+     *
+     * @return The element at the top of the stack.
+     * @throws std::underflow_error if the stack is empty.
+     */
     T peek() const {
         if (stackArr.empty()) {
             throw std::underflow_error("Stack is empty");
@@ -37,6 +64,11 @@ public:
         return stackArr.back();
     }
 
+    /**
+     * @brief Checks if the stack is empty.
+     *
+     * @return True if the stack is empty, false otherwise.
+     */
     bool isEmpty() const {
         return stackArr.empty();
     }
