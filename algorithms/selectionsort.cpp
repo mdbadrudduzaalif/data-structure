@@ -12,11 +12,11 @@
  * @param n The number of elements in the array.
  */
 template <typename T>
-void selectionSort(T arr[], int n) {
+void selectionSort(T arr[], size_t n) {
     if (n <= 1 || arr == nullptr) return;
-    for (int i = 0; i < n; i++) {
-        int min = i;
-        for (int j = i + 1; j < n; j++) {
+    for (size_t i = 0; i < n; i++) {
+        size_t min = i;
+        for (size_t j = i + 1; j < n; j++) {
             if (arr[min] > arr[j]) {
                 min = j;
             }
@@ -34,10 +34,10 @@ void selectionSort(T arr[], int n) {
 template <typename T>
 void selectionSort(std::vector<T>& arr) {
     if (arr.size() <= 1) return;
-    int n = arr.size();
-    for (int i = 0; i < n; i++) {
-        int min = i;
-        for (int j = i + 1; j < n; j++) {
+    size_t n = arr.size();
+    for (size_t i = 0; i < n; i++) {
+        size_t min = i;
+        for (size_t j = i + 1; j < n; j++) {
             if (arr[min] > arr[j]) {
                 min = j;
             }
@@ -49,7 +49,7 @@ void selectionSort(std::vector<T>& arr) {
 
 int main() {
     int array[] = {50, 10, 21, 7, 9, 78, 36, 123};
-    int n = sizeof(array) / sizeof(array[0]);
+    size_t n = sizeof(array) / sizeof(array[0]);
 
     std::cout << "Original array: ";
     printArray(array, n);
@@ -59,7 +59,7 @@ int main() {
     std::cout << "Sorted array: ";
     printArray(array, n);
 
-    for (int i = 0; i < n - 1; ++i) {
+    for (size_t i = 0; i < n - 1; ++i) {
         assert(array[i] <= array[i + 1]);
     }
 
