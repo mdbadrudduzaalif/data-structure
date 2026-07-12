@@ -27,6 +27,11 @@ int main() {
     assert(counts.first == 11);
     assert(counts.second == 9);
 
+    std::vector<int> empty_arr = {};
+    std::pair<int, int> empty_counts = countOddEven(empty_arr);
+    assert(empty_counts.first == 0);
+    assert(empty_counts.second == 0);
+
     std::cout << "All dsa1 tests passed." << std::endl;
 
     return 0;

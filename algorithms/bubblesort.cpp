@@ -12,11 +12,11 @@
  * @param n The number of elements in the array.
  */
 template <typename T>
-void bubbleSort(T arr[], int n) {
+void bubbleSort(T arr[], size_t n) {
     if (n <= 1 || arr == nullptr) return;
-    for (int last_index = n - 1; last_index > 0; last_index--) {
+    for (size_t last_index = n - 1; last_index > 0; last_index--) {
         bool swapped = false;
-        for (int index = 0; index < last_index; index++) {
+        for (size_t index = 0; index < last_index; index++) {
             if (arr[index] > arr[index + 1]) {
                 std::swap(arr[index], arr[index + 1]);
                 swapped = true;
@@ -35,22 +35,12 @@ void bubbleSort(T arr[], int n) {
 template <typename T>
 void bubbleSort(std::vector<T>& arr) {
     if (arr.size() <= 1) return;
-    int n = arr.size();
-    for (int last_index = n - 1; last_index > 0; last_index--) {
-        bool swapped = false;
-        for (int index = 0; index < last_index; index++) {
-            if (arr[index] > arr[index + 1]) {
-                std::swap(arr[index], arr[index + 1]);
-                swapped = true;
-            }
-        }
-        if (!swapped) break;
-    }
+    bubbleSort(arr.data(), arr.size());
 }
 
 int main() {
     int arr[] = {5, 6, 8, 4, 1, 2, 3, 9, 7, 10};
-    int n = sizeof(arr) / sizeof(arr[0]);
+    size_t n = sizeof(arr) / sizeof(arr[0]);
 
     std::cout << "Original array: ";
     printArray(arr, n);
@@ -61,7 +51,7 @@ int main() {
     printArray(arr, n);
 
     // Basic unit test
-    for (int i = 0; i < n - 1; ++i) {
+    for (size_t i = 0; i < n - 1; ++i) {
         assert(arr[i] <= arr[i + 1]);
     }
 
@@ -77,6 +67,21 @@ int main() {
     // Basic unit test
     for (size_t i = 0; i < vec.size() - 1; ++i) {
         assert(vec[i] <= vec[i + 1]);
+    }
+
+    // Edge cases testing
+    std::vector<int> empty_vec;
+    bubbleSort(empty_vec);
+    assert(empty_vec.empty());
+
+    std::vector<int> single_element_vec = {42};
+    bubbleSort(single_element_vec);
+    assert(single_element_vec.size() == 1 && single_element_vec[0] == 42);
+
+    std::vector<int> negative_vec = {-5, 3, -2, 8, -10, 0};
+    bubbleSort(negative_vec);
+    for (size_t i = 0; i < negative_vec.size() - 1; ++i) {
+        assert(negative_vec[i] <= negative_vec[i + 1]);
     }
 
     std::cout << "All bubbleSort tests passed." << std::endl;

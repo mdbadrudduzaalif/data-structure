@@ -20,6 +20,10 @@ int main() {
     assert(result.first == 60);
     assert(result.second == 20);
 
+    std::pair<int, int> neg_result = getSumAndDifference(-10, -5);
+    assert(neg_result.first == -15);
+    assert(neg_result.second == 5);
+
     std::cout << "All start tests passed." << std::endl;
 
     return 0;

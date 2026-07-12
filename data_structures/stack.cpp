@@ -30,14 +30,14 @@ public:
         return item;
     }
 
-    T peek() const {
+    [[nodiscard]] T peek() const {
         if (stackArr.empty()) {
             throw std::underflow_error("Stack is empty");
         }
         return stackArr.back();
     }
 
-    bool isEmpty() const {
+    [[nodiscard]] bool isEmpty() const {
         return stackArr.empty();
     }
 };
@@ -53,7 +53,7 @@ int main() {
     }
 
     try {
-        s.peek();
+        [[maybe_unused]] auto val = s.peek();
     } catch (const std::underflow_error& e) {
         std::cout << "Expected exception: " << e.what() << std::endl;
     }
@@ -81,6 +81,15 @@ int main() {
 
     assert(s.peek() == 6);
     std::cout << "top element : " << s.peek() << std::endl;
+
+    // Test with std::string to ensure template works with non-primitive types
+    Stack<std::string, 3> ss;
+    ss.push("hello");
+    ss.push("world");
+    assert(ss.peek() == "world");
+    assert(ss.pop() == "world");
+    assert(ss.pop() == "hello");
+    assert(ss.isEmpty());
 
     std::cout << "All Stack tests passed." << std::endl;
 
