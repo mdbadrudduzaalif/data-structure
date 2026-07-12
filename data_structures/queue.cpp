@@ -38,11 +38,11 @@ public:
         return item;
     }
 
-    bool isEmpty() const {
+    [[nodiscard]] bool isEmpty() const {
         return count == 0;
     }
 
-    T peek() const {
+    [[nodiscard]] T peek() const {
         if (count == 0) {
             throw std::underflow_error("Queue is empty");
         }
@@ -105,6 +105,15 @@ int main() {
     assert(q.dequeue() == 80);
 
     assert(q.isEmpty());
+
+    // Test with std::string to ensure template works with non-primitive types
+    Queue<std::string, 3> sq;
+    sq.enqueue("hello");
+    sq.enqueue("world");
+    assert(sq.peek() == "hello");
+    assert(sq.dequeue() == "hello");
+    assert(sq.dequeue() == "world");
+    assert(sq.isEmpty());
 
     std::cout << "All Queue tests passed." << std::endl;
 
