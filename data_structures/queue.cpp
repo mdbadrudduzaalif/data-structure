@@ -38,11 +38,11 @@ public:
         return item;
     }
 
-    bool isEmpty() const {
+    [[nodiscard]] bool isEmpty() const {
         return count == 0;
     }
 
-    T peek() const {
+    [[nodiscard]] T peek() const {
         if (count == 0) {
             throw std::underflow_error("Queue is empty");
         }
