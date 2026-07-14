@@ -1,37 +1,59 @@
 # Codebase Audit and Improvement Report
 
-## Overview
-A comprehensive audit and improvement pass has been completed for the Data Structures and Algorithms repository. The primary goal was to enhance code quality, architecture, readability, and performance while strictly preserving existing functionality and avoiding breaking changes.
+This document contains a summary of changes made to the repository based on the complete audit.
 
-## Improvements Made
+## Delivered Changes
 
-### 1. Codebase Cleanup & Architecture
-*   **Obsolete Files Removed**: Cleaned up the root directory by deleting obsolete, duplicated, or unorganized files (`24-59369-3_que.cpp`, `24-59369-3_queincom.cpp`, `24-59369-3_stack.cpp`, `bubblesort.cpp`, `dsa1.cpp`, `dsa2.cpp`, `insertion_sort.cpp`, `selectionsort.cpp`, `start.cpp`). These files were remnants of an older structure and had already been modularized into `algorithms/`, `basics/`, and `data_structures/`.
-*   **Modernized Include Guards**: Updated `algorithms/utils.h` to use `#pragma once` for modern include guarding, preventing multiple definition errors and slightly speeding up compilation.
+### 1. Build System & Test Infrastructure
+* **Change**: Added `enable_testing()` and individual `add_test(...)` entries for all project executables in `CMakeLists.txt`.
+* **Reason**: Previously, executing `ctest` failed because the test configuration was missing. The project needed an automated way to verify functionality after any refactoring.
+* **Impact**: Standardized test execution utilizing `ctest`. Simplifies regression testing moving forward.
+* **Trade-offs**: None. Basic integration simply executes the program and expects an exit code of 0 (which aligns with our `assert()` based internal tests).
+* **Affected Files**: `CMakeLists.txt`
 
-### 2. Bug Fixes & Error Handling
-*   **Queue Overflow Logic**: The circular queue `enqueue` logic in `data_structures/queue.cpp` was overly complex and hard to read. It has been simplified to use standard modulo arithmetic `(rear + 1) % msize == front`.
-*   **Exception Handling for Data Structures**: Replaced passive standard error prints (`std::cerr`) with active exception throwing (`std::overflow_error` and `std::underflow_error`) in `Stack` and `Queue` on overflow and underflow scenarios. This ensures calling code can robustly handle invalid states rather than silently continuing with corrupted logic. Existing test cases were updated to catch and assert these exceptions to maintain functionality verification.
+### 2. Algorithmic Type Narrowing Fixes
+* **Change**: Migrated standard loop indexing loops from `int` to `size_t` (and `std::ptrdiff_t` in decrementing cases).
+* **Reason**: Standard variables indexing into arrays or vectors run the risk of type overflow or negative indexes.
+* **Impact**: Ensured array lengths of all sizes are properly managed without risking undefined behavior or sign conversion warnings.
+* **Trade-offs**: Slightly more verbose types like `std::ptrdiff_t` are necessary for `insertionSort` since the inner loop decreases past zero logically, but this correctly prevents type underflows associated with unsigned integers.
+* **Affected Files**: `algorithms/bubblesort.cpp`, `algorithms/insertion_sort.cpp`, `algorithms/selectionsort.cpp`, `algorithms/utils.h`
 
-### 3. Code Quality & Documentation
-*   **Inline Documentation (Doxygen-style)**: Added Doxygen-style header comments and method comments to all algorithms (`bubblesort.cpp`, `insertion_sort.cpp`, `selectionsort.cpp`), data structures (`queue.cpp`, `stack.cpp`), and basic utilities (`dsa1.cpp`, `start.cpp`, `utils.h`). This highly improves readability, maintainability, and developer onboarding.
-*   **Variable Naming**: Standardized variable naming across algorithms. For instance, replaced the ambiguous variable `n` with `size` to clarify its purpose. Added clarifying inline comments explaining algorithm steps (e.g. swapping conditions in Bubble Sort and Selection Sort).
+### 3. Logic Deduplication in Overloads
+* **Change**: Standardized the `std::vector` implementation of functions across `algorithms/*` and `utils.h` to directly call the base C-style array implementation (e.g. `bubbleSort(arr.data(), arr.size());`).
+* **Reason**: Multiple algorithms copied their whole logic blocks for `std::vector` versions instead of delegating to the raw pointer version.
+* **Impact**: Decreased codebase size, reduced code duplication, improved maintainability (fixes to the core sorting algorithms now naturally apply to vector wrappers).
+* **Trade-offs**: A very small functional abstraction overhead compared to operating natively with vector iterators, but functionally irrelevant for these basic sizes.
+* **Affected Files**: `algorithms/bubblesort.cpp`, `algorithms/insertion_sort.cpp`, `algorithms/selectionsort.cpp`, `algorithms/utils.h`
 
-## Deliverables Summary
+### 4. Code Quality: `[[nodiscard]]` Enforcement
+* **Change**: Appended the `[[nodiscard]]` attribute to standard data structure accessors/removers (`Queue::dequeue`, `Queue::isEmpty`, `Stack::pop`, `countOddEven`, etc.). Cast values to `(void)` inside testing catch blocks in main to discard warnings properly.
+* **Reason**: Prevents bugs where users query structural state but accidentally ignore the returned results.
+* **Impact**: Compilation will throw warnings if critical returning outputs are ignored. Promotes explicit variable assignments or actions with elements removed from a Data Structure.
+* **Trade-offs**: Required casting results to `(void)` inside `main` functions where `pop()` calls were merely tested for Exception handling instead of state checks.
+* **Affected Files**: `basics/dsa1.cpp`, `basics/start.cpp`, `data_structures/queue.cpp`, `data_structures/stack.cpp`
 
-*   **Critical Issues Fixed**: Fixed weak error handling in `Queue` and `Stack` by throwing `std::overflow_error` and `std::underflow_error` rather than just printing to `std::cerr` and returning unreliably. Fixed complex and hard-to-read modulo arithmetic in the circular queue. Added bounds/null validation to array processing algorithms.
-*   **Performance Improvements**: Simplified queue overflow calculation logic slightly optimizes arithmetic operations per enqueue. Added `#pragma once` in the header file. Passed objects by constant reference (`const T&`) instead of by value where applicable to avoid unnecessary copies.
-*   **Code Quality Improvements**: Standardized variable naming. Added Doxygen-style documentation across the entire project. Added in-depth inline comments explaining complex code. Added early return conditions in algorithms for cleaner execution.
-*   **Security Improvements**: Implemented robust bounds checking through exceptions on full/empty states for Queue and Stack classes. Added null pointer checks and array length validations to sorting algorithms and utilities to prevent invalid memory accesses.
-*   **Design/Architecture Improvements**: Cleaned up the project root by removing obsolete, unused duplications, enforcing the cleanly segregated `basics/`, `algorithms/`, and `data_structures/` folder structure.
-*   **Technical Debt Removed**: 9 duplicate, unorganized C++ files removed from the root. Removed all `std::cerr` error traces mixed with actual state logic in classes.
+### 5. Documentation Standardization
+* **Change**: Implemented Doxygen-style documentation across undocumented functions and class members in basic programs and data structures.
+* **Reason**: Improves codebase readability and future onboarding.
+* **Impact**: Complete parity in code documentation. Standardizes IDE tooltip descriptions for external developers interacting with `Queue` or `Stack`.
+* **Trade-offs**: Increased line count in source files.
+* **Affected Files**: `basics/start.cpp`, `data_structures/queue.cpp`, `data_structures/stack.cpp`
 
-## Remaining Recommendations
-1.  **Unit Testing Framework**: Consider adopting a standard C++ testing framework like Google Test (gtest) or Catch2, rather than relying on simple `assert()` statements and standard output inspection within `main()` functions.
-2.  **Continuous Integration**: Setup GitHub Actions or a similar CI/CD pipeline to automatically run the CMake build and test suite on every commit.
-3.  **Template Separation**: Move the template implementations for `Queue` and `Stack` into separate header (`.h`) and implementation (`.tpp`) files if they are intended to be consumed as a library by other projects.
+---
 
-## Overall Project Health Score
-**95/100**
+## Final Project Summary
 
-The project is currently in an excellent state. It implements foundational data structures and algorithms accurately with modern C++ practices, utilizes a solid CMake build system, and is completely free of dead/obsolete code and compilation warnings. The code is well documented, cleanly organized, and memory/state safe.
+* **Critical issues fixed**: Fixed test command capabilities allowing actual CI execution. Fixed types risking narrowing errors.
+* **Performance improvements**: Optimized maintenance footprint via heavy logic deduplication in algorithm overloads.
+* **Code quality improvements**: Standardized API with `[[nodiscard]]` definitions. Centralized core sorting logic. Uniformly formatted documentation.
+* **Security improvements**: Improved type usage (`size_t` and `std::ptrdiff_t`) prevents potential memory overflow out-of-bounds pointer accesses.
+* **Design improvements**: Ensured complete encapsulation principles using class attributes properly documented using Doxygen standard.
+* **Technical debt removed**: Removed exact logic replication between pointer arrays and Standard Library vectors.
+* **Remaining recommendations**:
+  - Switch to a proper modern testing framework like Google Test (gtest) instead of simple `assert()` inside `main()` functions. This would better decouple business logic files from their unit tests.
+  - Separate header declarations from source definitions (e.g., `Queue.h` and `Queue.cpp`).
+* **Overall project health score**: 90/100 (Codebase is now highly idiomatic and standardized, only suffering slightly from lacking separated testing/header definitions).
+* **Priority list of future improvements**:
+  1. Add Google Test framework configuration.
+  2. Implement Iterators for Custom Data Structures (`Queue`, `Stack`).
+  3. Decouple header/source files for Data Structures.

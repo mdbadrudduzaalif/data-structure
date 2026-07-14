@@ -12,11 +12,11 @@
  * @param n The number of elements in the array.
  */
 template <typename T>
-void bubbleSort(T arr[], int n) {
+void bubbleSort(T arr[], size_t n) {
     if (n <= 1 || arr == nullptr) return;
-    for (int last_index = n - 1; last_index > 0; last_index--) {
+    for (size_t last_index = n - 1; last_index > 0; last_index--) {
         bool swapped = false;
-        for (int index = 0; index < last_index; index++) {
+        for (size_t index = 0; index < last_index; index++) {
             if (arr[index] > arr[index + 1]) {
                 std::swap(arr[index], arr[index + 1]);
                 swapped = true;
@@ -34,18 +34,7 @@ void bubbleSort(T arr[], int n) {
  */
 template <typename T>
 void bubbleSort(std::vector<T>& arr) {
-    if (arr.size() <= 1) return;
-    int n = arr.size();
-    for (int last_index = n - 1; last_index > 0; last_index--) {
-        bool swapped = false;
-        for (int index = 0; index < last_index; index++) {
-            if (arr[index] > arr[index + 1]) {
-                std::swap(arr[index], arr[index + 1]);
-                swapped = true;
-            }
-        }
-        if (!swapped) break;
-    }
+    bubbleSort(arr.data(), arr.size());
 }
 
 int main() {
