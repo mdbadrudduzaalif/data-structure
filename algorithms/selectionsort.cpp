@@ -12,11 +12,11 @@
  * @param n The number of elements in the array.
  */
 template <typename T>
-void selectionSort(T arr[], int n) {
+void selectionSort(T arr[], size_t n) {
     if (n <= 1 || arr == nullptr) return;
-    for (int i = 0; i < n; i++) {
-        int min = i;
-        for (int j = i + 1; j < n; j++) {
+    for (size_t i = 0; i < n; i++) {
+        size_t min = i;
+        for (size_t j = i + 1; j < n; j++) {
             if (arr[min] > arr[j]) {
                 min = j;
             }
@@ -33,17 +33,7 @@ void selectionSort(T arr[], int n) {
  */
 template <typename T>
 void selectionSort(std::vector<T>& arr) {
-    if (arr.size() <= 1) return;
-    int n = arr.size();
-    for (int i = 0; i < n; i++) {
-        int min = i;
-        for (int j = i + 1; j < n; j++) {
-            if (arr[min] > arr[j]) {
-                min = j;
-            }
-        }
-        std::swap(arr[i], arr[min]);
-    }
+    selectionSort(arr.data(), arr.size());
 }
 
 

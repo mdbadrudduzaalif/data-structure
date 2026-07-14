@@ -12,11 +12,11 @@
  * @param n The number of elements in the array.
  */
 template <typename T>
-void insertionSort(T arr[], int n) {
+void insertionSort(T arr[], size_t n) {
     if (n <= 1 || arr == nullptr) return;
-    for (int i = 1; i < n; i++) {
+    for (size_t i = 1; i < n; i++) {
         T key = arr[i];
-        int j = i - 1;
+        std::ptrdiff_t j = i - 1;
         
         while (j >= 0 && arr[j] > key) {
             arr[j + 1] = arr[j];
@@ -34,18 +34,7 @@ void insertionSort(T arr[], int n) {
  */
 template <typename T>
 void insertionSort(std::vector<T>& arr) {
-    if (arr.size() <= 1) return;
-    int n = arr.size();
-    for (int i = 1; i < n; i++) {
-        T key = arr[i];
-        int j = i - 1;
-
-        while (j >= 0 && arr[j] > key) {
-            arr[j + 1] = arr[j];
-            j--;
-        }
-        arr[j + 1] = key;
-    }
+    insertionSort(arr.data(), arr.size());
 }
 
 

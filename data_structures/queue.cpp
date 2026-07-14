@@ -3,6 +3,12 @@
 #include <cassert>
 #include <stdexcept>
 
+/**
+ * @brief A generic Queue data structure with a fixed maximum size.
+ *
+ * @tparam T The type of elements to store in the queue.
+ * @tparam msize The maximum number of elements the queue can hold. Defaults to 7.
+ */
 template <typename T, size_t msize = 7>
 class Queue {
 private:
@@ -11,10 +17,19 @@ private:
     size_t count;
 
 public:
+    /**
+     * @brief Constructs a new Queue object.
+     */
     Queue() : frontIndex(0), count(0) {
         queueArr.resize(msize);
     }
 
+    /**
+     * @brief Adds an element to the back of the queue.
+     *
+     * @param item The element to add.
+     * @throw std::overflow_error if the queue is full.
+     */
     void enqueue(const T& item) {
         if (count == msize) {
             throw std::overflow_error("Queue is full");
@@ -26,7 +41,13 @@ public:
         std::cout << "Enqueued element: " << item << std::endl;
     }
 
-    T dequeue() {
+    /**
+     * @brief Removes and returns the element at the front of the queue.
+     *
+     * @return The element at the front.
+     * @throw std::underflow_error if the queue is empty.
+     */
+    [[nodiscard]] T dequeue() {
         if (count == 0) {
             throw std::underflow_error("Queue is empty");
         }
@@ -38,17 +59,31 @@ public:
         return item;
     }
 
-    bool isEmpty() const {
+    /**
+     * @brief Checks if the queue is empty.
+     *
+     * @return true if the queue is empty, false otherwise.
+     */
+    [[nodiscard]] bool isEmpty() const {
         return count == 0;
     }
 
-    T peek() const {
+    /**
+     * @brief Returns the element at the front of the queue without removing it.
+     *
+     * @return The element at the front.
+     * @throw std::underflow_error if the queue is empty.
+     */
+    [[nodiscard]] T peek() const {
         if (count == 0) {
             throw std::underflow_error("Queue is empty");
         }
         return queueArr[frontIndex];
     }
 
+    /**
+     * @brief Displays the elements of the queue.
+     */
     void display() const {
         if (count == 0) {
             std::cout << "Queue is empty" << std::endl;
