@@ -11,12 +11,12 @@
  * @param n The number of elements in the array.
  */
 template <typename T>
-void printArray(const T* arr, int n) {
-    if (n <= 0 || arr == nullptr) {
+void printArray(const T* arr, size_t n) {
+    if (n == 0 || arr == nullptr) {
         std::cout << std::endl;
         return;
     }
-    for (int i = 0; i < n; i++) {
+    for (size_t i = 0; i < n; i++) {
         std::cout << arr[i] << " ";
     }
     std::cout << std::endl;
@@ -30,8 +30,5 @@ void printArray(const T* arr, int n) {
  */
 template <typename T>
 void printArray(const std::vector<T>& arr) {
-    for (const auto& item : arr) {
-        std::cout << item << " ";
-    }
-    std::cout << std::endl;
+    printArray(arr.data(), arr.size());
 }

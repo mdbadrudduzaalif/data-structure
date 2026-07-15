@@ -12,11 +12,11 @@
  * @param n The number of elements in the array.
  */
 template <typename T>
-void insertionSort(T arr[], int n) {
+void insertionSort(T arr[], size_t n) {
     if (n <= 1 || arr == nullptr) return;
-    for (int i = 1; i < n; i++) {
+    for (size_t i = 1; i < n; i++) {
         T key = arr[i];
-        int j = i - 1;
+        std::ptrdiff_t j = i - 1;
         
         while (j >= 0 && arr[j] > key) {
             arr[j + 1] = arr[j];
@@ -34,24 +34,13 @@ void insertionSort(T arr[], int n) {
  */
 template <typename T>
 void insertionSort(std::vector<T>& arr) {
-    if (arr.size() <= 1) return;
-    int n = arr.size();
-    for (int i = 1; i < n; i++) {
-        T key = arr[i];
-        int j = i - 1;
-
-        while (j >= 0 && arr[j] > key) {
-            arr[j + 1] = arr[j];
-            j--;
-        }
-        arr[j + 1] = key;
-    }
+    insertionSort(arr.data(), arr.size());
 }
 
 
 int main() {
     int arr[] = {64, 34, 25, 12, 22, 11, 90};
-    int n = sizeof(arr) / sizeof(arr[0]);
+    size_t n = sizeof(arr) / sizeof(arr[0]);
     
     std::cout << "Original array: ";
     printArray(arr, n);
@@ -61,7 +50,7 @@ int main() {
     std::cout << "Sorted array: ";
     printArray(arr, n);
 
-    for (int i = 0; i < n - 1; ++i) {
+    for (size_t i = 0; i < n - 1; ++i) {
         assert(arr[i] <= arr[i + 1]);
     }
 
