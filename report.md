@@ -16,6 +16,9 @@ A comprehensive audit and improvement pass has been completed for the Data Struc
 ### 3. Code Quality & Documentation
 *   **Inline Documentation (Doxygen-style)**: Added Doxygen-style header comments and method comments to all algorithms (`bubblesort.cpp`, `insertion_sort.cpp`, `selectionsort.cpp`), data structures (`queue.cpp`, `stack.cpp`), and basic utilities (`dsa1.cpp`, `start.cpp`, `utils.h`). This highly improves readability, maintainability, and developer onboarding.
 *   **Variable Naming**: Standardized variable naming across algorithms. For instance, replaced the ambiguous variable `n` with `size` to clarify its purpose. Added clarifying inline comments explaining algorithm steps (e.g. swapping conditions in Bubble Sort and Selection Sort).
+*   **Algorithm Deduplication**: Refactored sorting algorithms (Bubble Sort, Insertion Sort, Selection Sort) so that the `std::vector` overloads natively delegate to the raw pointer and size versions, eliminating duplicated sort logic and improving maintainability.
+*   **Data Structure Type Enhancements**: Transitioned size and index types across the algorithms and utilities from `int` to `size_t` to avoid type narrowing and negative size warnings. Used `std::ptrdiff_t` in Insertion Sort to allow inner loop decrement checking below zero safely.
+*   **Return Value Enforcement**: Attached `[[nodiscard]]` to getters (e.g., `isEmpty()`, `peek()`) and computation functions (e.g., `countOddEven`, `getSumAndDifference`) to explicitly prevent callers from ignoring critical return states and errors.
 
 ## Deliverables Summary
 
