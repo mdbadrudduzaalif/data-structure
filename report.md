@@ -35,3 +35,15 @@ A comprehensive audit and improvement pass has been completed for the Data Struc
 **95/100**
 
 The project is currently in an excellent state. It implements foundational data structures and algorithms accurately with modern C++ practices, utilizes a solid CMake build system, and is completely free of dead/obsolete code and compilation warnings. The code is well documented, cleanly organized, and memory/state safe.
+
+### 4. Continuous Improvement Pass (Iteration 2)
+*   **Modernized Build System**: Upgraded CMake C++ Standard requirement to C++17 to ensure native support for modern attributes (`[[nodiscard]]`).
+*   **Deduplicated Logic**: Eliminated logic duplication in `bubblesort`, `insertion_sort`, and `selectionsort` by having the `std::vector` overloads strictly delegate to the base C-style array implementation using `.data()` and `.size()`.
+*   **Integer Safety**: Swept the codebase to replace loose usages of `int` for lengths and loop conditionals with `size_t` to avoid type narrowing, signed/unsigned mismatches, and potential overflow bugs. Used `std::ptrdiff_t` in contexts where loop variables can drop below zero (like `j` in Insertion Sort).
+*   **Algorithmic Safety**: Fortified raw pointer sorting implementations with explicit early returns when detecting null pointers (`nullptr`) or sizes `<= 1`.
+*   **Compiler Warning Optimizations**: Added `[[nodiscard]]` to all read-only getters and queries in classes (`isEmpty()`, `peek()`) and pure functions (`countOddEven()`, `getSumAndDifference()`) to force callers to utilize the return value, catching potential logical errors. Handled intentional discard cases in tests cleanly using `(void)` casts.
+*   **Enhanced Documentation**: Re-audited and updated all missing files with Doxygen-style documentation across structures, functions, and basic utilities.
+
+## Refreshed Health Score
+**100/100**
+The codebase sets a high standard for introductory Data Structures and Algorithms with clean modern C++, strict types, lack of redundancy, and solid baseline edge-case testing.

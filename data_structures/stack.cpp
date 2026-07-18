@@ -3,16 +3,31 @@
 #include <cassert>
 #include <stdexcept>
 
+/**
+ * @brief A basic Stack data structure implemented using std::vector.
+ *
+ * @tparam T The type of elements to store in the stack.
+ * @tparam msize The maximum capacity of the stack.
+ */
 template <typename T, size_t msize = 7>
 class Stack {
 private:
     std::vector<T> stackArr;
 
 public:
+    /**
+     * @brief Constructs a new Stack object.
+     */
     Stack() {
         stackArr.reserve(msize);
     }
 
+    /**
+     * @brief Pushes an element onto the top of the stack.
+     *
+     * @param item The element to push.
+     * @throws std::overflow_error if the stack is full.
+     */
     void push(const T& item) {
         if (stackArr.size() == msize) {
             throw std::overflow_error("Stack is full");
@@ -21,6 +36,12 @@ public:
         std::cout << "pushed element " << item << std::endl;
     }
 
+    /**
+     * @brief Removes and returns the element at the top of the stack.
+     *
+     * @return T The removed element.
+     * @throws std::underflow_error if the stack is empty.
+     */
     T pop() {
         if (stackArr.empty()) {
             throw std::underflow_error("Stack is empty");
@@ -30,14 +51,25 @@ public:
         return item;
     }
 
-    T peek() const {
+    /**
+     * @brief Returns the element at the top of the stack without removing it.
+     *
+     * @return T The top element.
+     * @throws std::underflow_error if the stack is empty.
+     */
+    [[nodiscard]] T peek() const {
         if (stackArr.empty()) {
             throw std::underflow_error("Stack is empty");
         }
         return stackArr.back();
     }
 
-    bool isEmpty() const {
+    /**
+     * @brief Checks if the stack is empty.
+     *
+     * @return true if the stack is empty, false otherwise.
+     */
+    [[nodiscard]] bool isEmpty() const {
         return stackArr.empty();
     }
 };
@@ -53,7 +85,7 @@ int main() {
     }
 
     try {
-        s.peek();
+        (void)s.peek();
     } catch (const std::underflow_error& e) {
         std::cout << "Expected exception: " << e.what() << std::endl;
     }
