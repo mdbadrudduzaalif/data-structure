@@ -15,14 +15,16 @@ A comprehensive audit and improvement pass has been completed for the Data Struc
 
 ### 3. Code Quality & Documentation
 *   **Inline Documentation (Doxygen-style)**: Added Doxygen-style header comments and method comments to all algorithms (`bubblesort.cpp`, `insertion_sort.cpp`, `selectionsort.cpp`), data structures (`queue.cpp`, `stack.cpp`), and basic utilities (`dsa1.cpp`, `start.cpp`, `utils.h`). This highly improves readability, maintainability, and developer onboarding.
-*   **Variable Naming**: Standardized variable naming across algorithms. For instance, replaced the ambiguous variable `n` with `size` to clarify its purpose. Added clarifying inline comments explaining algorithm steps (e.g. swapping conditions in Bubble Sort and Selection Sort).
+*   **Variable Naming & Typing**: Standardized variable naming across algorithms. Upgraded index types from `int` to `size_t` and `std::ptrdiff_t` to prevent type narrowing warnings and prevent signed integer underflow bugs in decreasing loops.
+*   **Modern C++ Standardization**: Configured CMake to require C++17. Utilized `[[nodiscard]]` attributes to guarantee query method returns are handled by callers, improving state safety.
+*   **Deduplication**: Simplified generic data structures `std::vector` sorting capabilities by delegating logic directly to the raw pointer implementation using `.data()` and `.size()`.
 
 ## Deliverables Summary
 
 *   **Critical Issues Fixed**: Fixed weak error handling in `Queue` and `Stack` by throwing `std::overflow_error` and `std::underflow_error` rather than just printing to `std::cerr` and returning unreliably. Fixed complex and hard-to-read modulo arithmetic in the circular queue. Added bounds/null validation to array processing algorithms.
-*   **Performance Improvements**: Simplified queue overflow calculation logic slightly optimizes arithmetic operations per enqueue. Added `#pragma once` in the header file. Passed objects by constant reference (`const T&`) instead of by value where applicable to avoid unnecessary copies.
-*   **Code Quality Improvements**: Standardized variable naming. Added Doxygen-style documentation across the entire project. Added in-depth inline comments explaining complex code. Added early return conditions in algorithms for cleaner execution.
-*   **Security Improvements**: Implemented robust bounds checking through exceptions on full/empty states for Queue and Stack classes. Added null pointer checks and array length validations to sorting algorithms and utilities to prevent invalid memory accesses.
+*   **Performance Improvements**: Simplified queue overflow calculation logic slightly optimizes arithmetic operations per enqueue. Added `#pragma once` in the header file. Passed objects by constant reference (`const T&`) instead of by value where applicable to avoid unnecessary copies. Removed redundant sorting algorithm logic by deduplicating `std::vector` code.
+*   **Code Quality Improvements**: Added Doxygen-style documentation across the entire project. Updated to C++17 and implemented `[[nodiscard]]`. Used safe variable types `size_t` and `std::ptrdiff_t` for list iterations.
+*   **Security Improvements**: Implemented robust bounds checking through exceptions on full/empty states for Queue and Stack classes. Added null pointer checks and array length validations to sorting algorithms and utilities to prevent invalid memory accesses. Replaced potentially negative indices handling using standard `std::ptrdiff_t`.
 *   **Design/Architecture Improvements**: Cleaned up the project root by removing obsolete, unused duplications, enforcing the cleanly segregated `basics/`, `algorithms/`, and `data_structures/` folder structure.
 *   **Technical Debt Removed**: 9 duplicate, unorganized C++ files removed from the root. Removed all `std::cerr` error traces mixed with actual state logic in classes.
 
