@@ -3,16 +3,31 @@
 #include <cassert>
 #include <stdexcept>
 
+/**
+ * @brief A generic stack implementation using std::vector.
+ *
+ * @tparam T The type of elements to store in the stack.
+ * @tparam msize The maximum size of the stack (default is 7).
+ */
 template <typename T, size_t msize = 7>
 class Stack {
 private:
     std::vector<T> stackArr;
 
 public:
+    /**
+     * @brief Constructs an empty Stack.
+     */
     Stack() {
         stackArr.reserve(msize);
     }
 
+    /**
+     * @brief Pushes an element onto the top of the stack.
+     *
+     * @param item The element to push.
+     * @throws std::overflow_error if the stack is full.
+     */
     void push(const T& item) {
         if (stackArr.size() == msize) {
             throw std::overflow_error("Stack is full");
@@ -21,6 +36,12 @@ public:
         std::cout << "pushed element " << item << std::endl;
     }
 
+    /**
+     * @brief Removes and returns the top element of the stack.
+     *
+     * @return The popped element.
+     * @throws std::underflow_error if the stack is empty.
+     */
     T pop() {
         if (stackArr.empty()) {
             throw std::underflow_error("Stack is empty");
@@ -30,14 +51,25 @@ public:
         return item;
     }
 
-    T peek() const {
+    /**
+     * @brief Returns the top element without removing it.
+     *
+     * @return The element at the top.
+     * @throws std::underflow_error if the stack is empty.
+     */
+    [[nodiscard]] T peek() const {
         if (stackArr.empty()) {
             throw std::underflow_error("Stack is empty");
         }
         return stackArr.back();
     }
 
-    bool isEmpty() const {
+    /**
+     * @brief Checks if the stack is empty.
+     *
+     * @return true if empty, false otherwise.
+     */
+    [[nodiscard]] bool isEmpty() const {
         return stackArr.empty();
     }
 };
@@ -47,13 +79,13 @@ int main() {
     assert(s.isEmpty());
 
     try {
-        s.pop();
+        (void)s.pop();
     } catch (const std::underflow_error& e) {
         std::cout << "Expected exception: " << e.what() << std::endl;
     }
 
     try {
-        s.peek();
+        (void)s.peek();
     } catch (const std::underflow_error& e) {
         std::cout << "Expected exception: " << e.what() << std::endl;
     }

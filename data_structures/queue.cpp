@@ -3,6 +3,12 @@
 #include <cassert>
 #include <stdexcept>
 
+/**
+ * @brief A generic circular queue implementation using std::vector.
+ *
+ * @tparam T The type of elements to store in the queue.
+ * @tparam msize The maximum size of the queue (default is 7).
+ */
 template <typename T, size_t msize = 7>
 class Queue {
 private:
@@ -11,10 +17,19 @@ private:
     size_t count;
 
 public:
+    /**
+     * @brief Constructs an empty Queue.
+     */
     Queue() : frontIndex(0), count(0) {
         queueArr.resize(msize);
     }
 
+    /**
+     * @brief Adds an element to the back of the queue.
+     *
+     * @param item The element to enqueue.
+     * @throws std::overflow_error if the queue is full.
+     */
     void enqueue(const T& item) {
         if (count == msize) {
             throw std::overflow_error("Queue is full");
@@ -26,6 +41,12 @@ public:
         std::cout << "Enqueued element: " << item << std::endl;
     }
 
+    /**
+     * @brief Removes and returns the element at the front of the queue.
+     *
+     * @return The dequeued element.
+     * @throws std::underflow_error if the queue is empty.
+     */
     T dequeue() {
         if (count == 0) {
             throw std::underflow_error("Queue is empty");
@@ -38,17 +59,31 @@ public:
         return item;
     }
 
-    bool isEmpty() const {
+    /**
+     * @brief Checks if the queue is empty.
+     *
+     * @return true if empty, false otherwise.
+     */
+    [[nodiscard]] bool isEmpty() const {
         return count == 0;
     }
 
-    T peek() const {
+    /**
+     * @brief Returns the element at the front without removing it.
+     *
+     * @return The element at the front.
+     * @throws std::underflow_error if the queue is empty.
+     */
+    [[nodiscard]] T peek() const {
         if (count == 0) {
             throw std::underflow_error("Queue is empty");
         }
         return queueArr[frontIndex];
     }
 
+    /**
+     * @brief Displays the elements in the queue.
+     */
     void display() const {
         if (count == 0) {
             std::cout << "Queue is empty" << std::endl;
