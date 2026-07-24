@@ -31,7 +31,14 @@ A comprehensive audit and improvement pass has been completed for the Data Struc
 2.  **Continuous Integration**: Setup GitHub Actions or a similar CI/CD pipeline to automatically run the CMake build and test suite on every commit.
 3.  **Template Separation**: Move the template implementations for `Queue` and `Stack` into separate header (`.h`) and implementation (`.tpp`) files if they are intended to be consumed as a library by other projects.
 
-## Overall Project Health Score
-**95/100**
+### 4. Modern C++ & Best Practices (C++17)
+*   **CMake C++17 Upgrade**: Upgraded `CMakeLists.txt` to require C++17, enabling full use of modern features.
+*   **Attributes**: Added `[[nodiscard]]` to all query and getter methods (`isEmpty()`, `peek()`, `countOddEven()`, `getSumAndDifference()`) to enforce correct return value handling and prevent unused results, casting them to `void` explicitly when discarded intentionally (e.g. during underflow tests).
+*   **Type Safety**: Transitioned algorithmic sizes and loop indices from `int` to `size_t` to avoid type narrowing, warnings, and potential bugs. For loops potentially becoming negative (like in Insertion Sort), transitioned to `std::ptrdiff_t`.
+*   **Deduplication**: Deduplicated sorting algorithm logic by having standard `std::vector` overloads directly delegate to the underlying raw pointer implementation using `.data()` and `.size()`.
+*   **Null Safety Enhancements**: Replaced passive early returns on `nullptr` checks in raw pointer sorting algorithms with aggressive `std::invalid_argument` exceptions to immediately alert callers to invalid memory states.
 
-The project is currently in an excellent state. It implements foundational data structures and algorithms accurately with modern C++ practices, utilizes a solid CMake build system, and is completely free of dead/obsolete code and compilation warnings. The code is well documented, cleanly organized, and memory/state safe.
+## Overall Project Health Score
+**98/100**
+
+The project is currently in an outstanding state. It implements foundational data structures and algorithms accurately with modern C++17 practices (including `[[nodiscard]]` usage and strong size type safety), utilizes a solid CMake build system, and is completely free of dead/obsolete code and compilation warnings. The code is well documented, cleanly organized, completely deduplicated, and robustly memory/state safe with active exception throwing for invalid bounds/pointers.

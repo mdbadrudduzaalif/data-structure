@@ -30,14 +30,14 @@ public:
         return item;
     }
 
-    T peek() const {
+    [[nodiscard]] T peek() const {
         if (stackArr.empty()) {
             throw std::underflow_error("Stack is empty");
         }
         return stackArr.back();
     }
 
-    bool isEmpty() const {
+    [[nodiscard]] bool isEmpty() const {
         return stackArr.empty();
     }
 };
@@ -53,7 +53,7 @@ int main() {
     }
 
     try {
-        s.peek();
+        (void)s.peek();
     } catch (const std::underflow_error& e) {
         std::cout << "Expected exception: " << e.what() << std::endl;
     }
