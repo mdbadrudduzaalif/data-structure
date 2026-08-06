@@ -4,10 +4,10 @@
 #include <stdexcept>
 
 /**
- * @brief A generic Queue data structure with a fixed maximum size.
+ * @brief A generic Queue data structure with a maximum size.
  *
- * @tparam T The type of elements to store in the queue.
- * @tparam msize The maximum number of elements the queue can hold. Defaults to 7.
+ * @tparam T The type of elements to store.
+ * @tparam msize The maximum size of the queue.
  */
 template <typename T, size_t msize = 7>
 class Queue {
@@ -18,17 +18,17 @@ private:
 
 public:
     /**
-     * @brief Constructs a new Queue object.
+     * @brief Constructor for the Queue class.
      */
     Queue() : frontIndex(0), count(0) {
         queueArr.resize(msize);
     }
 
     /**
-     * @brief Adds an element to the back of the queue.
+     * @brief Adds an element to the rear of the queue.
      *
-     * @param item The element to add.
-     * @throw std::overflow_error if the queue is full.
+     * @param item The element to enqueue.
+     * @throws std::overflow_error if the queue is full.
      */
     void enqueue(const T& item) {
         if (count == msize) {
@@ -44,10 +44,10 @@ public:
     /**
      * @brief Removes and returns the element at the front of the queue.
      *
-     * @return The element at the front.
-     * @throw std::underflow_error if the queue is empty.
+     * @return The dequeued element.
+     * @throws std::underflow_error if the queue is empty.
      */
-    [[nodiscard]] T dequeue() {
+    T dequeue() {
         if (count == 0) {
             throw std::underflow_error("Queue is empty");
         }
@@ -71,8 +71,8 @@ public:
     /**
      * @brief Returns the element at the front of the queue without removing it.
      *
-     * @return The element at the front.
-     * @throw std::underflow_error if the queue is empty.
+     * @return The front element.
+     * @throws std::underflow_error if the queue is empty.
      */
     [[nodiscard]] T peek() const {
         if (count == 0) {

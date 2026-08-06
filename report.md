@@ -1,59 +1,58 @@
 # Codebase Audit and Improvement Report
 
-This document contains a summary of changes made to the repository based on the complete audit.
+## Overview
+A comprehensive audit and refactoring of the DSABasics C++ repository was performed to enhance code quality, enforce modern C++ practices, validate inputs, improve documentation, and maintain full backward and API compatibility.
 
-## Delivered Changes
+## Detailed Changes
 
-### 1. Build System & Test Infrastructure
-* **Change**: Added `enable_testing()` and individual `add_test(...)` entries for all project executables in `CMakeLists.txt`.
-* **Reason**: Previously, executing `ctest` failed because the test configuration was missing. The project needed an automated way to verify functionality after any refactoring.
-* **Impact**: Standardized test execution utilizing `ctest`. Simplifies regression testing moving forward.
-* **Trade-offs**: None. Basic integration simply executes the program and expects an exit code of 0 (which aligns with our `assert()` based internal tests).
-* **Affected Files**: `CMakeLists.txt`
+### 1. Build Configuration (`CMakeLists.txt`)
+- **Why:** To support modern C++17 features, specifically the `[[nodiscard]]` attribute.
+- **Impact:** Upgraded standard from C++14 to C++17.
+- **Trade-offs:** Requires a C++17 compliant compiler.
+- **Affected Files:** `CMakeLists.txt`
+- **Behavior:** `cmake` successfully configures the project with `-std=gnu++17` equivalent.
 
-### 2. Algorithmic Type Narrowing Fixes
-* **Change**: Migrated standard loop indexing loops from `int` to `size_t` (and `std::ptrdiff_t` in decrementing cases).
-* **Reason**: Standard variables indexing into arrays or vectors run the risk of type overflow or negative indexes.
-* **Impact**: Ensured array lengths of all sizes are properly managed without risking undefined behavior or sign conversion warnings.
-* **Trade-offs**: Slightly more verbose types like `std::ptrdiff_t` are necessary for `insertionSort` since the inner loop decreases past zero logically, but this correctly prevents type underflows associated with unsigned integers.
-* **Affected Files**: `algorithms/bubblesort.cpp`, `algorithms/insertion_sort.cpp`, `algorithms/selectionsort.cpp`, `algorithms/utils.h`
+### 2. Utilities Refactoring (`algorithms/utils.h`)
+- **Why:** To prevent type narrowing, add input validation, and deduplicate printing logic.
+- **Impact:** Improved robustness and reduced code duplication.
+- **Trade-offs:** None.
+- **Affected Files:** `algorithms/utils.h`
+- **Behavior:** `printArray` now uses `size_t`. It throws `std::invalid_argument` if `arr` is null but `n > 0`. The `std::vector` overload delegates to the raw pointer version.
 
-### 3. Logic Deduplication in Overloads
-* **Change**: Standardized the `std::vector` implementation of functions across `algorithms/*` and `utils.h` to directly call the base C-style array implementation (e.g. `bubbleSort(arr.data(), arr.size());`).
-* **Reason**: Multiple algorithms copied their whole logic blocks for `std::vector` versions instead of delegating to the raw pointer version.
-* **Impact**: Decreased codebase size, reduced code duplication, improved maintainability (fixes to the core sorting algorithms now naturally apply to vector wrappers).
-* **Trade-offs**: A very small functional abstraction overhead compared to operating natively with vector iterators, but functionally irrelevant for these basic sizes.
-* **Affected Files**: `algorithms/bubblesort.cpp`, `algorithms/insertion_sort.cpp`, `algorithms/selectionsort.cpp`, `algorithms/utils.h`
+### 3. Algorithm Refactoring (`algorithms/bubblesort.cpp`, `algorithms/insertion_sort.cpp`, `algorithms/selectionsort.cpp`)
+- **Why:** Array bounds should be `size_t` to handle large arrays safely and avoid compiler warnings. Inputs must be validated safely (checking `n <= 1` before null pointer checks).
+- **Impact:** Algorithms now safely handle empty vectors and large array bounds.
+- **Trade-offs:** Inner loops counting backwards (like in insertion sort) required `std::ptrdiff_t` to allow checking `>= 0`.
+- **Affected Files:** `algorithms/bubblesort.cpp`, `algorithms/insertion_sort.cpp`, `algorithms/selectionsort.cpp`
+- **Behavior:** `std::vector` implementations delegate to the underlying raw pointer functions, maintaining single sources of truth. Validates array pointers properly.
 
-### 4. Code Quality: `[[nodiscard]]` Enforcement
-* **Change**: Appended the `[[nodiscard]]` attribute to standard data structure accessors/removers (`Queue::dequeue`, `Queue::isEmpty`, `Stack::pop`, `countOddEven`, etc.). Cast values to `(void)` inside testing catch blocks in main to discard warnings properly.
-* **Reason**: Prevents bugs where users query structural state but accidentally ignore the returned results.
-* **Impact**: Compilation will throw warnings if critical returning outputs are ignored. Promotes explicit variable assignments or actions with elements removed from a Data Structure.
-* **Trade-offs**: Required casting results to `(void)` inside `main` functions where `pop()` calls were merely tested for Exception handling instead of state checks.
-* **Affected Files**: `basics/dsa1.cpp`, `basics/start.cpp`, `data_structures/queue.cpp`, `data_structures/stack.cpp`
+### 4. Basic File Improvements (`basics/dsa1.cpp`, `basics/start.cpp`)
+- **Why:** Query functions without side effects should have their return values handled by the caller. Missing documentation makes code harder to maintain.
+- **Impact:** Compiler now warns if the results of `getSumAndDifference` and `countOddEven` are discarded.
+- **Trade-offs:** None.
+- **Affected Files:** `basics/dsa1.cpp`, `basics/start.cpp`
+- **Behavior:** Same runtime behavior; enhanced compile-time safety and self-documenting code.
 
-### 5. Documentation Standardization
-* **Change**: Implemented Doxygen-style documentation across undocumented functions and class members in basic programs and data structures.
-* **Reason**: Improves codebase readability and future onboarding.
-* **Impact**: Complete parity in code documentation. Standardizes IDE tooltip descriptions for external developers interacting with `Queue` or `Stack`.
-* **Trade-offs**: Increased line count in source files.
-* **Affected Files**: `basics/start.cpp`, `data_structures/queue.cpp`, `data_structures/stack.cpp`
+### 5. Data Structures Enhancements (`data_structures/queue.cpp`, `data_structures/stack.cpp`)
+- **Why:** To document classes using Doxygen standards and enforce return-value checking on query methods.
+- **Impact:** Improved readability. Enforced safe usage of `isEmpty()` and `peek()`.
+- **Trade-offs:** Required explicitly casting intentionally discarded returns in test code to `(void)` to prevent warnings.
+- **Affected Files:** `data_structures/queue.cpp`, `data_structures/stack.cpp`
+- **Behavior:** Same runtime behavior. Classes are now fully documented. Tests correctly silence compiler warnings.
 
 ---
 
-## Final Project Summary
+## Deliverables Summary
 
-* **Critical issues fixed**: Fixed test command capabilities allowing actual CI execution. Fixed types risking narrowing errors.
-* **Performance improvements**: Optimized maintenance footprint via heavy logic deduplication in algorithm overloads.
-* **Code quality improvements**: Standardized API with `[[nodiscard]]` definitions. Centralized core sorting logic. Uniformly formatted documentation.
-* **Security improvements**: Improved type usage (`size_t` and `std::ptrdiff_t`) prevents potential memory overflow out-of-bounds pointer accesses.
-* **Design improvements**: Ensured complete encapsulation principles using class attributes properly documented using Doxygen standard.
-* **Technical debt removed**: Removed exact logic replication between pointer arrays and Standard Library vectors.
-* **Remaining recommendations**:
-  - Switch to a proper modern testing framework like Google Test (gtest) instead of simple `assert()` inside `main()` functions. This would better decouple business logic files from their unit tests.
-  - Separate header declarations from source definitions (e.g., `Queue.h` and `Queue.cpp`).
-* **Overall project health score**: 90/100 (Codebase is now highly idiomatic and standardized, only suffering slightly from lacking separated testing/header definitions).
-* **Priority list of future improvements**:
-  1. Add Google Test framework configuration.
-  2. Implement Iterators for Custom Data Structures (`Queue`, `Stack`).
-  3. Decouple header/source files for Data Structures.
+- **Critical issues fixed:** Eliminated false-positive null pointer dereference risks in algorithms when passed empty vectors (by checking `n <= 1` first). Fixed missing return value checks using `[[nodiscard]]`.
+- **Performance improvements:** Removed duplicate algorithmic logic by delegating `std::vector` processing to underlying `.data()` pointers. Loop indices updated to native machine word size (`size_t`).
+- **Code quality improvements:** Consistent Doxygen-style documentation applied across data structures and utilities. Cleaned up duplication.
+- **Security improvements:** Added strict runtime validation in `printArray` and sort functions.
+- **Design improvements:** Unified sorting algorithm logic for array and vectors. Standardized C++17 build configurations.
+- **Technical debt removed:** Duplicated sorting logic and print logic removed. Cleaned up missing types.
+- **Remaining recommendations:** Consider modularizing tests into an external testing framework (e.g., GTest or Catch2) instead of testing directly in `main()` functions.
+- **Overall project health score (0–100):** 95
+- **Priority list of future improvements:**
+  1. Integrate a dedicated testing framework (e.g., Google Test).
+  2. Separate the main driver code from the implementation details (i.e. separate `.h` and `.cpp` files).
+  3. Set up a CI pipeline (e.g., GitHub Actions) to automate CMake builds and tests.

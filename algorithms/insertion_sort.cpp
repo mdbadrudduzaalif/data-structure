@@ -4,6 +4,8 @@
 #include <algorithm>
 #include "utils.h"
 
+#include <stdexcept>
+
 /**
  * @brief Sorts a C-style array using the Insertion Sort algorithm.
  *
@@ -12,8 +14,9 @@
  * @param n The number of elements in the array.
  */
 template <typename T>
-void insertionSort(T arr[], size_t n) {
-    if (n <= 1 || arr == nullptr) return;
+void insertionSort(T* arr, size_t n) {
+    if (n <= 1) return;
+    if (arr == nullptr) throw std::invalid_argument("Array pointer cannot be null when size > 1");
     for (size_t i = 1; i < n; i++) {
         T key = arr[i];
         std::ptrdiff_t j = i - 1;
@@ -40,7 +43,7 @@ void insertionSort(std::vector<T>& arr) {
 
 int main() {
     int arr[] = {64, 34, 25, 12, 22, 11, 90};
-    int n = sizeof(arr) / sizeof(arr[0]);
+    size_t n = sizeof(arr) / sizeof(arr[0]);
     
     std::cout << "Original array: ";
     printArray(arr, n);
@@ -50,7 +53,7 @@ int main() {
     std::cout << "Sorted array: ";
     printArray(arr, n);
 
-    for (int i = 0; i < n - 1; ++i) {
+    for (size_t i = 0; i < n - 1; ++i) {
         assert(arr[i] <= arr[i + 1]);
     }
 
