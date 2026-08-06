@@ -4,10 +4,10 @@
 #include <stdexcept>
 
 /**
- * @brief A fixed-size stack data structure.
+ * @brief A generic Stack data structure with a maximum size.
  *
- * @tparam T The type of elements stored in the stack.
- * @tparam msize The maximum number of elements the stack can hold.
+ * @tparam T The type of elements to store.
+ * @tparam msize The maximum size of the stack.
  */
 template <typename T, size_t msize = 7>
 class Stack {
@@ -16,14 +16,14 @@ private:
 
 public:
     /**
-     * @brief Constructs an empty Stack.
+     * @brief Constructor for the Stack class.
      */
     Stack() {
         stackArr.reserve(msize);
     }
 
     /**
-     * @brief Pushes an element onto the top of the stack.
+     * @brief Adds an element to the top of the stack.
      *
      * @param item The element to push.
      * @throws std::overflow_error if the stack is full.
@@ -39,7 +39,7 @@ public:
     /**
      * @brief Removes and returns the element at the top of the stack.
      *
-     * @return The element that was removed.
+     * @return The popped element.
      * @throws std::underflow_error if the stack is empty.
      */
     T pop() {
@@ -54,7 +54,7 @@ public:
     /**
      * @brief Returns the element at the top of the stack without removing it.
      *
-     * @return The element at the top.
+     * @return The top element.
      * @throws std::underflow_error if the stack is empty.
      */
     [[nodiscard]] T peek() const {
@@ -67,7 +67,7 @@ public:
     /**
      * @brief Checks if the stack is empty.
      *
-     * @return True if the stack is empty, false otherwise.
+     * @return true if the stack is empty, false otherwise.
      */
     [[nodiscard]] bool isEmpty() const {
         return stackArr.empty();
@@ -79,7 +79,7 @@ int main() {
     assert(s.isEmpty());
 
     try {
-        (void)s.pop();
+        s.pop();
     } catch (const std::underflow_error& e) {
         std::cout << "Expected exception: " << e.what() << std::endl;
     }
