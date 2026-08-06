@@ -4,6 +4,8 @@
 #include <algorithm>
 #include "utils.h"
 
+#include <stdexcept>
+
 /**
  * @brief Sorts a C-style array using the Selection Sort algorithm.
  *
@@ -12,18 +14,17 @@
  * @param n The number of elements in the array.
  */
 template <typename T>
-void selectionSort(T arr[], size_t n) {
-    if (n <= 1 || arr == nullptr) return;
-    for (size_t i = 0; i < n - 1; i++) {
+void selectionSort(T* arr, size_t n) {
+    if (n <= 1) return;
+    if (arr == nullptr) throw std::invalid_argument("Array pointer cannot be null when size > 1");
+    for (size_t i = 0; i < n; i++) {
         size_t min = i;
         for (size_t j = i + 1; j < n; j++) {
             if (arr[min] > arr[j]) {
                 min = j;
             }
         }
-        if (min != i) {
-            std::swap(arr[i], arr[min]);
-        }
+        std::swap(arr[i], arr[min]);
     }
 }
 
@@ -35,19 +36,7 @@ void selectionSort(T arr[], size_t n) {
  */
 template <typename T>
 void selectionSort(std::vector<T>& arr) {
-    if (arr.size() <= 1) return;
-    size_t n = arr.size();
-    for (size_t i = 0; i < n - 1; i++) {
-        size_t min = i;
-        for (size_t j = i + 1; j < n; j++) {
-            if (arr[min] > arr[j]) {
-                min = j;
-            }
-        }
-        if (min != i) {
-            std::swap(arr[i], arr[min]);
-        }
-    }
+    selectionSort(arr.data(), arr.size());
 }
 
 

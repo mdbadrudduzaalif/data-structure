@@ -4,10 +4,10 @@
 #include <stdexcept>
 
 /**
- * @brief A generic circular queue implementation using std::vector.
+ * @brief A generic Queue data structure with a maximum size.
  *
- * @tparam T The type of elements to store in the queue.
- * @tparam msize The maximum capacity of the queue (defaults to 7).
+ * @tparam T The type of elements to store.
+ * @tparam msize The maximum size of the queue.
  */
 template <typename T, size_t msize = 7>
 class Queue {
@@ -18,16 +18,16 @@ private:
 
 public:
     /**
-     * @brief Constructs a new Queue object.
+     * @brief Constructor for the Queue class.
      */
     Queue() : frontIndex(0), count(0) {
         queueArr.resize(msize);
     }
 
     /**
-     * @brief Adds an element to the back of the queue.
+     * @brief Adds an element to the rear of the queue.
      *
-     * @param item The element to add.
+     * @param item The element to enqueue.
      * @throws std::overflow_error if the queue is full.
      */
     void enqueue(const T& item) {
@@ -42,9 +42,9 @@ public:
     }
 
     /**
-     * @brief Removes and returns the front element of the queue.
+     * @brief Removes and returns the element at the front of the queue.
      *
-     * @return T The removed element.
+     * @return The dequeued element.
      * @throws std::underflow_error if the queue is empty.
      */
     T dequeue() {
@@ -62,20 +62,19 @@ public:
     /**
      * @brief Checks if the queue is empty.
      *
-     * @return true If the queue has no elements.
-     * @return false If the queue has at least one element.
+     * @return true if the queue is empty, false otherwise.
      */
-    bool isEmpty() const {
+    [[nodiscard]] bool isEmpty() const {
         return count == 0;
     }
 
     /**
-     * @brief Returns the front element without removing it.
+     * @brief Returns the element at the front of the queue without removing it.
      *
-     * @return T The front element.
+     * @return The front element.
      * @throws std::underflow_error if the queue is empty.
      */
-    T peek() const {
+    [[nodiscard]] T peek() const {
         if (count == 0) {
             throw std::underflow_error("Queue is empty");
         }
@@ -83,7 +82,7 @@ public:
     }
 
     /**
-     * @brief Displays the elements of the queue from front to back.
+     * @brief Displays the elements of the queue.
      */
     void display() const {
         if (count == 0) {
