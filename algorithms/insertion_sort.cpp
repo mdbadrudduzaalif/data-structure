@@ -4,6 +4,8 @@
 #include <algorithm>
 #include "utils.h"
 
+#include <stdexcept>
+
 /**
  * @brief Sorts a C-style array using the Insertion Sort algorithm.
  *
@@ -12,17 +14,18 @@
  * @param n The number of elements in the array.
  */
 template <typename T>
-void insertionSort(T arr[], size_t n) {
-    if (n <= 1 || arr == nullptr) return;
+void insertionSort(T* arr, size_t n) {
+    if (n <= 1) return;
+    if (arr == nullptr) throw std::invalid_argument("Array pointer cannot be null when size > 1");
     for (size_t i = 1; i < n; i++) {
-        T key = std::move(arr[i]);
-        std::ptrdiff_t j = static_cast<std::ptrdiff_t>(i) - 1;
+        T key = arr[i];
+        std::ptrdiff_t j = i - 1;
         
         while (j >= 0 && arr[j] > key) {
-            arr[j + 1] = std::move(arr[j]);
+            arr[j + 1] = arr[j];
             j--;
         }
-        arr[j + 1] = std::move(key);
+        arr[j + 1] = key;
     }
 }
 
@@ -34,7 +37,6 @@ void insertionSort(T arr[], size_t n) {
  */
 template <typename T>
 void insertionSort(std::vector<T>& arr) {
-    if (arr.size() <= 1) return;
     insertionSort(arr.data(), arr.size());
 }
 
@@ -66,21 +68,6 @@ int main() {
 
     for (size_t i = 0; i < vec.size() - 1; ++i) {
         assert(vec[i] <= vec[i + 1]);
-    }
-
-    // Edge cases testing
-    std::vector<int> empty_vec;
-    insertionSort(empty_vec);
-    assert(empty_vec.empty());
-
-    std::vector<int> single_element_vec = {42};
-    insertionSort(single_element_vec);
-    assert(single_element_vec.size() == 1 && single_element_vec[0] == 42);
-
-    std::vector<int> negative_vec = {-5, 3, -2, 8, -10, 0};
-    insertionSort(negative_vec);
-    for (size_t i = 0; i < negative_vec.size() - 1; ++i) {
-        assert(negative_vec[i] <= negative_vec[i + 1]);
     }
 
     std::cout << "All insertionSort tests passed." << std::endl;

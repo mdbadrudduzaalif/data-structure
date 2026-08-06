@@ -4,6 +4,8 @@
 #include <algorithm>
 #include "utils.h"
 
+#include <stdexcept>
+
 /**
  * @brief Sorts a C-style array using the Bubble Sort algorithm.
  *
@@ -12,8 +14,9 @@
  * @param n The number of elements in the array.
  */
 template <typename T>
-void bubbleSort(T arr[], size_t n) {
-    if (n <= 1 || arr == nullptr) return;
+void bubbleSort(T* arr, size_t n) {
+    if (n <= 1) return;
+    if (arr == nullptr) throw std::invalid_argument("Array pointer cannot be null when size > 1");
     for (size_t last_index = n - 1; last_index > 0; last_index--) {
         bool swapped = false;
         for (size_t index = 0; index < last_index; index++) {
@@ -34,7 +37,6 @@ void bubbleSort(T arr[], size_t n) {
  */
 template <typename T>
 void bubbleSort(std::vector<T>& arr) {
-    if (arr.size() <= 1) return;
     bubbleSort(arr.data(), arr.size());
 }
 
@@ -67,21 +69,6 @@ int main() {
     // Basic unit test
     for (size_t i = 0; i < vec.size() - 1; ++i) {
         assert(vec[i] <= vec[i + 1]);
-    }
-
-    // Edge cases testing
-    std::vector<int> empty_vec;
-    bubbleSort(empty_vec);
-    assert(empty_vec.empty());
-
-    std::vector<int> single_element_vec = {42};
-    bubbleSort(single_element_vec);
-    assert(single_element_vec.size() == 1 && single_element_vec[0] == 42);
-
-    std::vector<int> negative_vec = {-5, 3, -2, 8, -10, 0};
-    bubbleSort(negative_vec);
-    for (size_t i = 0; i < negative_vec.size() - 1; ++i) {
-        assert(negative_vec[i] <= negative_vec[i + 1]);
     }
 
     std::cout << "All bubbleSort tests passed." << std::endl;

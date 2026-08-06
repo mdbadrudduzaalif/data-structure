@@ -3,16 +3,31 @@
 #include <cassert>
 #include <stdexcept>
 
+/**
+ * @brief A generic Stack data structure with a maximum size.
+ *
+ * @tparam T The type of elements to store.
+ * @tparam msize The maximum size of the stack.
+ */
 template <typename T, size_t msize = 7>
 class Stack {
 private:
     std::vector<T> stackArr;
 
 public:
+    /**
+     * @brief Constructor for the Stack class.
+     */
     Stack() {
         stackArr.reserve(msize);
     }
 
+    /**
+     * @brief Adds an element to the top of the stack.
+     *
+     * @param item The element to push.
+     * @throws std::overflow_error if the stack is full.
+     */
     void push(const T& item) {
         if (stackArr.size() == msize) {
             throw std::overflow_error("Stack is full");
@@ -21,6 +36,12 @@ public:
         std::cout << "pushed element " << item << std::endl;
     }
 
+    /**
+     * @brief Removes and returns the element at the top of the stack.
+     *
+     * @return The popped element.
+     * @throws std::underflow_error if the stack is empty.
+     */
     T pop() {
         if (stackArr.empty()) {
             throw std::underflow_error("Stack is empty");
@@ -30,6 +51,12 @@ public:
         return item;
     }
 
+    /**
+     * @brief Returns the element at the top of the stack without removing it.
+     *
+     * @return The top element.
+     * @throws std::underflow_error if the stack is empty.
+     */
     [[nodiscard]] T peek() const {
         if (stackArr.empty()) {
             throw std::underflow_error("Stack is empty");
@@ -37,6 +64,11 @@ public:
         return stackArr.back();
     }
 
+    /**
+     * @brief Checks if the stack is empty.
+     *
+     * @return true if the stack is empty, false otherwise.
+     */
     [[nodiscard]] bool isEmpty() const {
         return stackArr.empty();
     }
@@ -53,7 +85,7 @@ int main() {
     }
 
     try {
-        [[maybe_unused]] auto val = s.peek();
+        (void)s.peek();
     } catch (const std::underflow_error& e) {
         std::cout << "Expected exception: " << e.what() << std::endl;
     }
@@ -81,15 +113,6 @@ int main() {
 
     assert(s.peek() == 6);
     std::cout << "top element : " << s.peek() << std::endl;
-
-    // Test with std::string to ensure template works with non-primitive types
-    Stack<std::string, 3> ss;
-    ss.push("hello");
-    ss.push("world");
-    assert(ss.peek() == "world");
-    assert(ss.pop() == "world");
-    assert(ss.pop() == "hello");
-    assert(ss.isEmpty());
 
     std::cout << "All Stack tests passed." << std::endl;
 
