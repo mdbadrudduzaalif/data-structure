@@ -17,14 +17,16 @@ template <typename T>
 void selectionSort(T* arr, size_t n) {
     if (n <= 1) return;
     if (arr == nullptr) throw std::invalid_argument("Array pointer cannot be null when size > 1");
-    for (size_t i = 0; i < n; i++) {
+    for (size_t i = 0; i < n - 1; i++) {
         size_t min = i;
         for (size_t j = i + 1; j < n; j++) {
             if (arr[min] > arr[j]) {
                 min = j;
             }
         }
-        std::swap(arr[i], arr[min]);
+        if (min != i) {
+            std::swap(arr[i], arr[min]);
+        }
     }
 }
 

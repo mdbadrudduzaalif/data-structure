@@ -11,6 +11,8 @@
  */
 template <typename T, size_t msize = 7>
 class Queue {
+    static_assert(msize > 0, "Queue size must be greater than 0");
+
 private:
     std::vector<T> queueArr;
     size_t frontIndex;
@@ -42,6 +44,23 @@ public:
     }
 
     /**
+     * @brief Adds an element to the rear of the queue using move semantics.
+     *
+     * @param item The element to enqueue.
+     * @throws std::overflow_error if the queue is full.
+     */
+    void enqueue(T&& item) {
+        if (count == msize) {
+            throw std::overflow_error("Queue is full");
+        }
+
+        size_t rearIndex = (frontIndex + count) % msize;
+        queueArr[rearIndex] = std::move(item);
+        count++;
+        std::cout << "Enqueued element: " << queueArr[rearIndex] << std::endl;
+    }
+
+    /**
      * @brief Removes and returns the element at the front of the queue.
      *
      * @return The dequeued element.
@@ -66,6 +85,23 @@ public:
      */
     [[nodiscard]] bool isEmpty() const {
         return count == 0;
+    }
+
+    /**
+     * @brief Returns the number of elements in the queue.
+     *
+     * @return The size of the queue.
+     */
+    [[nodiscard]] size_t getSize() const {
+        return count;
+    }
+
+    /**
+     * @brief Clears all elements from the queue.
+     */
+    void clear() {
+        frontIndex = 0;
+        count = 0;
     }
 
     /**
@@ -140,6 +176,22 @@ int main() {
     assert(q.dequeue() == 80);
 
     assert(q.isEmpty());
+    assert(q.getSize() == 0);
+
+    // Test clear and getSize
+    q.enqueue(100);
+    q.enqueue(200);
+    assert(q.getSize() == 2);
+    q.clear();
+    assert(q.isEmpty());
+    assert(q.getSize() == 0);
+
+    // Test move semantics
+    std::string str1 = "hello";
+    Queue<std::string, 5> sq;
+    sq.enqueue(std::move(str1));
+    assert(sq.getSize() == 1);
+    assert(str1.empty()); // Moved from
 
     std::cout << "All Queue tests passed." << std::endl;
 
