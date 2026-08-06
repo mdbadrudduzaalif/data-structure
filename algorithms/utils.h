@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+
 #include <stdexcept>
 
 /**
@@ -18,7 +19,7 @@ void printArray(const T* arr, size_t n) {
         return;
     }
     if (arr == nullptr) {
-        throw std::invalid_argument("Array pointer is null");
+        throw std::invalid_argument("Array pointer cannot be null when size > 0");
     }
     for (size_t i = 0; i < n; i++) {
         std::cout << arr[i] << " ";

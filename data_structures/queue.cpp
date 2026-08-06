@@ -4,10 +4,10 @@
 #include <stdexcept>
 
 /**
- * @brief A basic Queue data structure implementation using a circular array.
+ * @brief A generic Queue data structure with a maximum size.
  *
- * @tparam T The type of elements in the queue.
- * @tparam msize The maximum capacity of the queue.
+ * @tparam T The type of elements to store.
+ * @tparam msize The maximum size of the queue.
  */
 template <typename T, size_t msize = 7>
 class Queue {
@@ -18,16 +18,16 @@ private:
 
 public:
     /**
-     * @brief Construct a new Queue object.
+     * @brief Constructor for the Queue class.
      */
     Queue() : frontIndex(0), count(0) {
         queueArr.resize(msize);
     }
 
     /**
-     * @brief Enqueues an item to the rear of the queue.
+     * @brief Adds an element to the rear of the queue.
      *
-     * @param item The item to enqueue.
+     * @param item The element to enqueue.
      * @throws std::overflow_error if the queue is full.
      */
     void enqueue(const T& item) {
@@ -42,9 +42,9 @@ public:
     }
 
     /**
-     * @brief Dequeues an item from the front of the queue.
+     * @brief Removes and returns the element at the front of the queue.
      *
-     * @return T The item dequeued from the queue.
+     * @return The dequeued element.
      * @throws std::underflow_error if the queue is empty.
      */
     T dequeue() {
@@ -69,9 +69,9 @@ public:
     }
 
     /**
-     * @brief Peeks at the item on the front of the queue without removing it.
+     * @brief Returns the element at the front of the queue without removing it.
      *
-     * @return T The item on the front of the queue.
+     * @return The front element.
      * @throws std::underflow_error if the queue is empty.
      */
     [[nodiscard]] T peek() const {
