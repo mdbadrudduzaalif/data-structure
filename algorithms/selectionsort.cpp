@@ -4,6 +4,8 @@
 #include <algorithm>
 #include "utils.h"
 
+#include <stdexcept>
+
 /**
  * @brief Sorts a C-style array using the Selection Sort algorithm.
  *
@@ -12,9 +14,9 @@
  * @param n The number of elements in the array.
  */
 template <typename T>
-void selectionSort(T arr[], size_t n) {
+void selectionSort(T* arr, size_t n) {
     if (n <= 1) return;
-    if (arr == nullptr) return;
+    if (arr == nullptr) throw std::invalid_argument("Array pointer cannot be null when size > 1");
     for (size_t i = 0; i < n; i++) {
         size_t min = i;
         for (size_t j = i + 1; j < n; j++) {
