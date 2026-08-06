@@ -17,3 +17,13 @@ add_executable(selectionsort algorithms/selectionsort.cpp)
 # Data Structures
 add_executable(queue data_structures/queue.cpp)
 add_executable(stack data_structures/stack.cpp)
+
+# Testing
+enable_testing()
+add_test(NAME dsa1_test COMMAND dsa1)
+add_test(NAME start_test COMMAND start)
+add_test(NAME bubblesort_test COMMAND bubblesort)
+add_test(NAME insertion_sort_test COMMAND insertion_sort)
+add_test(NAME selectionsort_test COMMAND selectionsort)
+add_test(NAME queue_test COMMAND queue)
+add_test(NAME stack_test COMMAND stack)
