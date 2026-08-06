@@ -4,10 +4,10 @@
 #include <stdexcept>
 
 /**
- * @brief A basic Stack data structure implemented using std::vector.
+ * @brief A generic Stack data structure with a maximum size.
  *
- * @tparam T The type of elements to store in the stack.
- * @tparam msize The maximum capacity of the stack.
+ * @tparam T The type of elements to store.
+ * @tparam msize The maximum size of the stack.
  */
 template <typename T, size_t msize = 7>
 class Stack {
@@ -16,14 +16,14 @@ private:
 
 public:
     /**
-     * @brief Constructs a new Stack object.
+     * @brief Constructor for the Stack class.
      */
     Stack() {
         stackArr.reserve(msize);
     }
 
     /**
-     * @brief Pushes an element onto the top of the stack.
+     * @brief Adds an element to the top of the stack.
      *
      * @param item The element to push.
      * @throws std::overflow_error if the stack is full.
@@ -39,7 +39,7 @@ public:
     /**
      * @brief Removes and returns the element at the top of the stack.
      *
-     * @return T The removed element.
+     * @return The popped element.
      * @throws std::underflow_error if the stack is empty.
      */
     T pop() {
@@ -54,7 +54,7 @@ public:
     /**
      * @brief Returns the element at the top of the stack without removing it.
      *
-     * @return T The top element.
+     * @return The top element.
      * @throws std::underflow_error if the stack is empty.
      */
     [[nodiscard]] T peek() const {

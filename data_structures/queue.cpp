@@ -4,10 +4,10 @@
 #include <stdexcept>
 
 /**
- * @brief A basic Queue data structure implemented using a circular array logic over std::vector.
+ * @brief A generic Queue data structure with a maximum size.
  *
- * @tparam T The type of elements to store in the queue.
- * @tparam msize The maximum capacity of the queue.
+ * @tparam T The type of elements to store.
+ * @tparam msize The maximum size of the queue.
  */
 template <typename T, size_t msize = 7>
 class Queue {
@@ -18,7 +18,7 @@ private:
 
 public:
     /**
-     * @brief Constructs a new Queue object.
+     * @brief Constructor for the Queue class.
      */
     Queue() : frontIndex(0), count(0) {
         queueArr.resize(msize);
@@ -44,7 +44,7 @@ public:
     /**
      * @brief Removes and returns the element at the front of the queue.
      *
-     * @return T The removed element.
+     * @return The dequeued element.
      * @throws std::underflow_error if the queue is empty.
      */
     T dequeue() {
@@ -71,7 +71,7 @@ public:
     /**
      * @brief Returns the element at the front of the queue without removing it.
      *
-     * @return T The front element.
+     * @return The front element.
      * @throws std::underflow_error if the queue is empty.
      */
     [[nodiscard]] T peek() const {
@@ -82,7 +82,7 @@ public:
     }
 
     /**
-     * @brief Displays the elements currently in the queue.
+     * @brief Displays the elements of the queue.
      */
     void display() const {
         if (count == 0) {
