@@ -4,10 +4,10 @@
 #include <stdexcept>
 
 /**
- * @brief A template-based circular queue implementation.
+ * @brief A generic Queue data structure with a maximum size.
  *
- * @tparam T The type of elements stored in the queue.
- * @tparam msize The maximum capacity of the queue (defaults to 7).
+ * @tparam T The type of elements to store.
+ * @tparam msize The maximum size of the queue.
  */
 template <typename T, size_t msize = 7>
 class Queue {
@@ -18,7 +18,7 @@ private:
 
 public:
     /**
-     * @brief Constructs a new Queue.
+     * @brief Constructor for the Queue class.
      */
     Queue() : frontIndex(0), count(0) {
         queueArr.resize(msize);
@@ -27,8 +27,8 @@ public:
     /**
      * @brief Adds an element to the rear of the queue.
      *
-     * @param item The element to add.
-     * @throw std::overflow_error if the queue is full.
+     * @param item The element to enqueue.
+     * @throws std::overflow_error if the queue is full.
      */
     void enqueue(const T& item) {
         if (count == msize) {
@@ -44,8 +44,8 @@ public:
     /**
      * @brief Removes and returns the element at the front of the queue.
      *
-     * @return T The removed element.
-     * @throw std::underflow_error if the queue is empty.
+     * @return The dequeued element.
+     * @throws std::underflow_error if the queue is empty.
      */
     T dequeue() {
         if (count == 0) {
@@ -64,17 +64,17 @@ public:
      *
      * @return true if the queue is empty, false otherwise.
      */
-    bool isEmpty() const {
+    [[nodiscard]] bool isEmpty() const {
         return count == 0;
     }
 
     /**
      * @brief Returns the element at the front of the queue without removing it.
      *
-     * @return T The element at the front.
-     * @throw std::underflow_error if the queue is empty.
+     * @return The front element.
+     * @throws std::underflow_error if the queue is empty.
      */
-    T peek() const {
+    [[nodiscard]] T peek() const {
         if (count == 0) {
             throw std::underflow_error("Queue is empty");
         }
@@ -82,7 +82,7 @@ public:
     }
 
     /**
-     * @brief Displays the elements currently in the queue.
+     * @brief Displays the elements of the queue.
      */
     void display() const {
         if (count == 0) {
