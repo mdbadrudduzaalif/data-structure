@@ -3,6 +3,8 @@
 #include <iostream>
 #include <vector>
 
+#include <stdexcept>
+
 /**
  * @brief Prints the elements of a C-style array.
  *
@@ -12,9 +14,12 @@
  */
 template <typename T>
 void printArray(const T* arr, size_t n) {
-    if (n == 0 || arr == nullptr) {
+    if (n == 0) {
         std::cout << std::endl;
         return;
+    }
+    if (arr == nullptr) {
+        throw std::invalid_argument("Array pointer cannot be null when size > 0");
     }
     for (size_t i = 0; i < n; i++) {
         std::cout << arr[i] << " ";
@@ -30,8 +35,5 @@ void printArray(const T* arr, size_t n) {
  */
 template <typename T>
 void printArray(const std::vector<T>& arr) {
-    for (const auto& item : arr) {
-        std::cout << item << " ";
-    }
-    std::cout << std::endl;
+    printArray(arr.data(), arr.size());
 }
