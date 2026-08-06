@@ -2,8 +2,9 @@
 #include <vector>
 #include <cassert>
 #include <algorithm>
-#include <cstddef>
 #include "utils.h"
+
+#include <stdexcept>
 
 /**
  * @brief Sorts a C-style array using the Insertion Sort algorithm.
@@ -13,8 +14,9 @@
  * @param n The number of elements in the array.
  */
 template <typename T>
-void insertionSort(T arr[], size_t n) {
-    if (arr == nullptr || n <= 1) return;
+void insertionSort(T* arr, size_t n) {
+    if (n <= 1) return;
+    if (arr == nullptr) throw std::invalid_argument("Array pointer cannot be null when size > 1");
     for (size_t i = 1; i < n; i++) {
         T key = arr[i];
         std::ptrdiff_t j = i - 1;
@@ -35,18 +37,7 @@ void insertionSort(T arr[], size_t n) {
  */
 template <typename T>
 void insertionSort(std::vector<T>& arr) {
-    if (arr.size() <= 1) return;
-    size_t n = arr.size();
-    for (size_t i = 1; i < n; i++) {
-        T key = arr[i];
-        std::ptrdiff_t j = i - 1;
-
-        while (j >= 0 && arr[j] > key) {
-            arr[j + 1] = arr[j];
-            j--;
-        }
-        arr[j + 1] = key;
-    }
+    insertionSort(arr.data(), arr.size());
 }
 
 

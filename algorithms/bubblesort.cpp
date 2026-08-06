@@ -4,6 +4,8 @@
 #include <algorithm>
 #include "utils.h"
 
+#include <stdexcept>
+
 /**
  * @brief Sorts a C-style array using the Bubble Sort algorithm.
  *
@@ -12,8 +14,9 @@
  * @param n The number of elements in the array.
  */
 template <typename T>
-void bubbleSort(T arr[], size_t n) {
-    if (arr == nullptr || n <= 1) return;
+void bubbleSort(T* arr, size_t n) {
+    if (n <= 1) return;
+    if (arr == nullptr) throw std::invalid_argument("Array pointer cannot be null when size > 1");
     for (size_t last_index = n - 1; last_index > 0; last_index--) {
         bool swapped = false;
         for (size_t index = 0; index < last_index; index++) {
@@ -34,18 +37,7 @@ void bubbleSort(T arr[], size_t n) {
  */
 template <typename T>
 void bubbleSort(std::vector<T>& arr) {
-    if (arr.size() <= 1) return;
-    size_t n = arr.size();
-    for (size_t last_index = n - 1; last_index > 0; last_index--) {
-        bool swapped = false;
-        for (size_t index = 0; index < last_index; index++) {
-            if (arr[index] > arr[index + 1]) {
-                std::swap(arr[index], arr[index + 1]);
-                swapped = true;
-            }
-        }
-        if (!swapped) break;
-    }
+    bubbleSort(arr.data(), arr.size());
 }
 
 int main() {
