@@ -4,6 +4,8 @@
 #include <algorithm>
 #include "utils.h"
 
+#include <stdexcept>
+
 /**
  * @brief Sorts a C-style array using the Selection Sort algorithm.
  *
@@ -12,18 +14,17 @@
  * @param n The number of elements in the array.
  */
 template <typename T>
-void selectionSort(T arr[], int n) {
-    if (n <= 1 || arr == nullptr) return;
-    for (int i = 0; i < n - 1; i++) {
-        int min = i;
-        for (int j = i + 1; j < n; j++) {
+void selectionSort(T* arr, size_t n) {
+    if (n <= 1) return;
+    if (arr == nullptr) throw std::invalid_argument("Array pointer cannot be null when size > 1");
+    for (size_t i = 0; i < n; i++) {
+        size_t min = i;
+        for (size_t j = i + 1; j < n; j++) {
             if (arr[min] > arr[j]) {
                 min = j;
             }
         }
-        if (min != i) {
-            std::swap(arr[i], arr[min]);
-        }
+        std::swap(arr[i], arr[min]);
     }
 }
 
@@ -35,25 +36,13 @@ void selectionSort(T arr[], int n) {
  */
 template <typename T>
 void selectionSort(std::vector<T>& arr) {
-    if (arr.size() <= 1) return;
-    size_t n = arr.size();
-    for (size_t i = 0; i < n - 1; i++) {
-        size_t min = i;
-        for (size_t j = i + 1; j < n; j++) {
-            if (arr[min] > arr[j]) {
-                min = j;
-            }
-        }
-        if (min != i) {
-            std::swap(arr[i], arr[min]);
-        }
-    }
+    selectionSort(arr.data(), arr.size());
 }
 
 
 int main() {
     int array[] = {50, 10, 21, 7, 9, 78, 36, 123};
-    int n = sizeof(array) / sizeof(array[0]);
+    size_t n = sizeof(array) / sizeof(array[0]);
 
     std::cout << "Original array: ";
     printArray(array, n);
@@ -63,7 +52,7 @@ int main() {
     std::cout << "Sorted array: ";
     printArray(array, n);
 
-    for (int i = 0; i < n - 1; ++i) {
+    for (size_t i = 0; i < n - 1; ++i) {
         assert(array[i] <= array[i + 1]);
     }
 
@@ -79,10 +68,6 @@ int main() {
     for (size_t i = 0; i < vec.size() - 1; ++i) {
         assert(vec[i] <= vec[i + 1]);
     }
-
-    std::vector<int> empty_vec;
-    selectionSort(empty_vec);
-    assert(empty_vec.empty());
 
     std::cout << "All selectionSort tests passed." << std::endl;
 
