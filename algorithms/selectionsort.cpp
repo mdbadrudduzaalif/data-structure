@@ -24,7 +24,9 @@ void selectionSort(T* arr, size_t n) {
                 min = j;
             }
         }
-        std::swap(arr[i], arr[min]);
+        if (min != i) {
+            std::swap(arr[i], arr[min]);
+        }
     }
 }
 
