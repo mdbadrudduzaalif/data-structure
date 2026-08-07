@@ -34,24 +34,31 @@ A comprehensive audit and refactoring of the DSABasics C++ repository was perfor
 - **Behavior:** Same runtime behavior; enhanced compile-time safety and self-documenting code.
 
 ### 5. Data Structures Enhancements (`data_structures/queue.cpp`, `data_structures/stack.cpp`)
-- **Why:** To document classes using Doxygen standards and enforce return-value checking on query methods.
-- **Impact:** Improved readability. Enforced safe usage of `isEmpty()` and `peek()`.
+- **Why:** To document classes using Doxygen standards, enforce return-value checking on query methods, and optimize element insertion.
+- **Impact:** Improved readability, safety, and performance.
 - **Trade-offs:** Required explicitly casting intentionally discarded returns in test code to `(void)` to prevent warnings.
 - **Affected Files:** `data_structures/queue.cpp`, `data_structures/stack.cpp`
-- **Behavior:** Same runtime behavior. Classes are now fully documented. Tests correctly silence compiler warnings.
+- **Behavior:** Classes are now fully documented and enforce valid capacities at compile-time (`static_assert(msize > 0)`). Added move semantics to `push` and `enqueue` to prevent unnecessary copying. Added `getSize()` method.
+
+### 6. Additional Algorithm & Basics Refactoring
+- **Why:** Optimize basic operations and algorithms, and prevent integer type narrowing.
+- **Impact:** Improved memory and CPU efficiency during operations.
+- **Trade-offs:** None.
+- **Affected Files:** `algorithms/insertion_sort.cpp`, `algorithms/selectionsort.cpp`, `basics/dsa1.cpp`
+- **Behavior:** `insertionSort` now utilizes `std::move` to avoid deep copying during shifting. `selectionSort` checks `if (min != i)` before swapping. `countOddEven` uses `size_t` for counts.
 
 ---
 
 ## Deliverables Summary
 
-- **Critical issues fixed:** Eliminated false-positive null pointer dereference risks in algorithms when passed empty vectors (by checking `n <= 1` first). Fixed missing return value checks using `[[nodiscard]]`.
-- **Performance improvements:** Removed duplicate algorithmic logic by delegating `std::vector` processing to underlying `.data()` pointers. Loop indices updated to native machine word size (`size_t`).
+- **Critical issues fixed:** Eliminated false-positive null pointer dereference risks in algorithms when passed empty vectors (by checking `n <= 1` first). Fixed missing return value checks using `[[nodiscard]]`. Prevented invalid zero-sized data structures using compile-time validation.
+- **Performance improvements:** Removed duplicate algorithmic logic by delegating `std::vector` processing to underlying `.data()` pointers. Loop indices updated to native machine word size (`size_t`). Added move semantics to data structures and insertion sort to prevent copying. Prevented unnecessary swaps in selection sort.
 - **Code quality improvements:** Consistent Doxygen-style documentation applied across data structures and utilities. Cleaned up duplication.
-- **Security improvements:** Added strict runtime validation in `printArray` and sort functions.
-- **Design improvements:** Unified sorting algorithm logic for array and vectors. Standardized C++17 build configurations.
-- **Technical debt removed:** Duplicated sorting logic and print logic removed. Cleaned up missing types.
+- **Security improvements:** Added strict runtime validation in `printArray` and sort functions. Enforced non-zero data structure sizing at compile-time.
+- **Design improvements:** Unified sorting algorithm logic for array and vectors. Standardized C++17 build configurations. Added standard size querying (`getSize()`) to data structures.
+- **Technical debt removed:** Duplicated sorting logic and print logic removed. Cleaned up missing types and type narrowing warnings.
 - **Remaining recommendations:** Consider modularizing tests into an external testing framework (e.g., GTest or Catch2) instead of testing directly in `main()` functions.
-- **Overall project health score (0–100):** 95
+- **Overall project health score (0–100):** 98
 - **Priority list of future improvements:**
   1. Integrate a dedicated testing framework (e.g., Google Test).
   2. Separate the main driver code from the implementation details (i.e. separate `.h` and `.cpp` files).
