@@ -11,6 +11,8 @@
  */
 template <typename T, size_t msize = 7>
 class Stack {
+    static_assert(msize > 0, "Stack size must be greater than 0");
+
 private:
     std::vector<T> stackArr;
 
@@ -34,6 +36,20 @@ public:
         }
         stackArr.push_back(item);
         std::cout << "pushed element " << item << std::endl;
+    }
+
+    /**
+     * @brief Adds an element to the top of the stack (move semantics).
+     *
+     * @param item The element to push.
+     * @throws std::overflow_error if the stack is full.
+     */
+    void push(T&& item) {
+        if (stackArr.size() == msize) {
+            throw std::overflow_error("Stack is full");
+        }
+        std::cout << "pushed element (moved) " << item << std::endl;
+        stackArr.push_back(std::move(item));
     }
 
     /**
@@ -72,6 +88,15 @@ public:
     [[nodiscard]] bool isEmpty() const {
         return stackArr.empty();
     }
+
+    /**
+     * @brief Gets the current number of elements in the stack.
+     *
+     * @return The number of elements.
+     */
+    [[nodiscard]] size_t getSize() const {
+        return stackArr.size();
+    }
 };
 
 int main() {
@@ -104,15 +129,24 @@ int main() {
     }
 
     assert(!s.isEmpty());
+    assert(s.getSize() == 7);
     assert(s.peek() == 7);
     std::cout << "top element : " << s.peek() << std::endl;
 
     int popped = s.pop();
     assert(popped == 7);
+    assert(s.getSize() == 6);
     std::cout << "poped element : " << popped << std::endl;
 
     assert(s.peek() == 6);
     std::cout << "top element : " << s.peek() << std::endl;
+
+    // Test move semantics
+    Stack<std::string> ss;
+    std::string str = "World";
+    ss.push(std::move(str));
+    assert(ss.getSize() == 1);
+    assert(ss.peek() == "World");
 
     std::cout << "All Stack tests passed." << std::endl;
 
