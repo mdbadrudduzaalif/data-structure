@@ -40,18 +40,25 @@ A comprehensive audit and refactoring of the DSABasics C++ repository was perfor
 - **Affected Files:** `data_structures/queue.cpp`, `data_structures/stack.cpp`
 - **Behavior:** Same runtime behavior. Classes are now fully documented. Tests correctly silence compiler warnings.
 
+### 6. Data Structures Move Semantics & Compile-time validation (`data_structures/queue.cpp`, `data_structures/stack.cpp`)
+- **Why:** To improve performance when inserting objects, reducing unnecessary deep copies, and to ensure compile-time validity of the data structures size limit.
+- **Impact:** Added move semantic support via `std::move` and `T&&` on insertion methods (`push`, `enqueue`). Enforced `msize > 0` validation at compile time via `static_assert`.
+- **Trade-offs:** Minimal; slightly increases code footprint but significantly increases robustness and potential performance.
+- **Affected Files:** `data_structures/queue.cpp`, `data_structures/stack.cpp`
+- **Behavior:** Retained existing behavior but with optimizations for movable objects and a hard stop at compilation if given an invalid template size parameter.
+
 ---
 
 ## Deliverables Summary
 
 - **Critical issues fixed:** Eliminated false-positive null pointer dereference risks in algorithms when passed empty vectors (by checking `n <= 1` first). Fixed missing return value checks using `[[nodiscard]]`.
-- **Performance improvements:** Removed duplicate algorithmic logic by delegating `std::vector` processing to underlying `.data()` pointers. Loop indices updated to native machine word size (`size_t`).
-- **Code quality improvements:** Consistent Doxygen-style documentation applied across data structures and utilities. Cleaned up duplication.
+- **Performance improvements:** Removed duplicate algorithmic logic by delegating `std::vector` processing to underlying `.data()` pointers. Loop indices updated to native machine word size (`size_t`). Added move semantics (`std::move`) to avoid expensive deep copies during insertions in stack and queue structures.
+- **Code quality improvements:** Consistent Doxygen-style documentation applied across data structures and utilities. Cleaned up duplication. Enforced type bounds and capacity limits statically at compile time using `static_assert`.
 - **Security improvements:** Added strict runtime validation in `printArray` and sort functions.
-- **Design improvements:** Unified sorting algorithm logic for array and vectors. Standardized C++17 build configurations.
-- **Technical debt removed:** Duplicated sorting logic and print logic removed. Cleaned up missing types.
-- **Remaining recommendations:** Consider modularizing tests into an external testing framework (e.g., GTest or Catch2) instead of testing directly in `main()` functions.
-- **Overall project health score (0–100):** 95
+- **Design improvements:** Unified sorting algorithm logic for array and vectors. Standardized C++17 build configurations. Supported move semantics natively alongside lvalue pass-by-const-reference defaults.
+- **Technical debt removed:** Duplicated sorting logic and print logic removed. Cleaned up missing types. Addressed potential edge case configurations where custom size inputs could have bypass instantiation checks.
+- **Remaining recommendations:** Consider modularizing tests into an external testing framework (e.g., GTest or Catch2) instead of testing directly in `main()` functions. Write custom test cases involving heavy objects to benchmark move semantic insertion optimization.
+- **Overall project health score (0–100):** 97
 - **Priority list of future improvements:**
   1. Integrate a dedicated testing framework (e.g., Google Test).
   2. Separate the main driver code from the implementation details (i.e. separate `.h` and `.cpp` files).
