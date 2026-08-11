@@ -11,6 +11,8 @@
  */
 template <typename T, size_t msize = 7>
 class Stack {
+    static_assert(msize > 0, "Capacity must be greater than zero");
+
 private:
     std::vector<T> stackArr;
 
@@ -37,6 +39,20 @@ public:
     }
 
     /**
+     * @brief Adds an element to the top of the stack using move semantics.
+     *
+     * @param item The element to push.
+     * @throws std::overflow_error if the stack is full.
+     */
+    void push(T&& item) {
+        if (stackArr.size() == msize) {
+            throw std::overflow_error("Stack is full");
+        }
+        std::cout << "pushed element " << item << std::endl;
+        stackArr.push_back(std::move(item));
+    }
+
+    /**
      * @brief Removes and returns the element at the top of the stack.
      *
      * @return The popped element.
@@ -46,7 +62,7 @@ public:
         if (stackArr.empty()) {
             throw std::underflow_error("Stack is empty");
         }
-        T item = stackArr.back();
+        T item = std::move(stackArr.back());
         stackArr.pop_back();
         return item;
     }
@@ -72,11 +88,31 @@ public:
     [[nodiscard]] bool isEmpty() const {
         return stackArr.empty();
     }
+
+    /**
+     * @brief Gets the current number of elements in the stack.
+     *
+     * @return The number of elements.
+     */
+    [[nodiscard]] size_t getSize() const {
+        return stackArr.size();
+    }
+
+    /**
+     * @brief Gets the maximum capacity of the stack.
+     *
+     * @return The maximum capacity.
+     */
+    [[nodiscard]] size_t getCapacity() const {
+        return msize;
+    }
 };
 
 int main() {
     Stack<int> s;
     assert(s.isEmpty());
+    assert(s.getSize() == 0);
+    assert(s.getCapacity() == 7);
 
     try {
         s.pop();
@@ -96,7 +132,9 @@ int main() {
     s.push(4);
     s.push(5);
     s.push(6);
-    s.push(7);
+    s.push(std::move(7));
+
+    assert(s.getSize() == 7);
     try {
         s.push(8); // Overflow expected here
     } catch (const std::overflow_error& e) {

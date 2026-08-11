@@ -11,6 +11,8 @@
  */
 template <typename T, size_t msize = 7>
 class Queue {
+    static_assert(msize > 0, "Capacity must be greater than zero");
+
 private:
     std::vector<T> queueArr;
     size_t frontIndex;
@@ -42,6 +44,23 @@ public:
     }
 
     /**
+     * @brief Adds an element to the rear of the queue using move semantics.
+     *
+     * @param item The element to enqueue.
+     * @throws std::overflow_error if the queue is full.
+     */
+    void enqueue(T&& item) {
+        if (count == msize) {
+            throw std::overflow_error("Queue is full");
+        }
+
+        size_t rearIndex = (frontIndex + count) % msize;
+        std::cout << "Enqueued element: " << item << std::endl;
+        queueArr[rearIndex] = std::move(item);
+        count++;
+    }
+
+    /**
      * @brief Removes and returns the element at the front of the queue.
      *
      * @return The dequeued element.
@@ -52,7 +71,7 @@ public:
             throw std::underflow_error("Queue is empty");
         }
 
-        T item = queueArr[frontIndex];
+        T item = std::move(queueArr[frontIndex]);
         frontIndex = (frontIndex + 1) % msize;
         count--;
         std::cout << "Dequeued element: " << item << std::endl;
@@ -66,6 +85,24 @@ public:
      */
     [[nodiscard]] bool isEmpty() const {
         return count == 0;
+    }
+
+    /**
+     * @brief Gets the current number of elements in the queue.
+     *
+     * @return The number of elements.
+     */
+    [[nodiscard]] size_t getSize() const {
+        return count;
+    }
+
+    /**
+     * @brief Gets the maximum capacity of the queue.
+     *
+     * @return The maximum capacity.
+     */
+    [[nodiscard]] size_t getCapacity() const {
+        return msize;
     }
 
     /**
@@ -102,13 +139,16 @@ int main() {
     Queue<int> q;
 
     assert(q.isEmpty());
+    assert(q.getSize() == 0);
+    assert(q.getCapacity() == 7);
 
     q.enqueue(10);
     q.enqueue(20);
-    q.enqueue(30);
+    q.enqueue(std::move(30));
     q.display();
 
     assert(!q.isEmpty());
+    assert(q.getSize() == 3);
     assert(q.peek() == 10);
 
     int dequeued = q.dequeue();
