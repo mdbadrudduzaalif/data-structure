@@ -21,6 +21,7 @@ public:
      * @brief Constructor for the Queue class.
      */
     Queue() : frontIndex(0), count(0) {
+        static_assert(msize > 0, "Maximum size of queue must be greater than 0");
         queueArr.resize(msize);
     }
 
@@ -39,6 +40,23 @@ public:
         queueArr[rearIndex] = item;
         count++;
         std::cout << "Enqueued element: " << item << std::endl;
+    }
+
+    /**
+     * @brief Adds an element to the rear of the queue using move semantics.
+     *
+     * @param item The element to enqueue.
+     * @throws std::overflow_error if the queue is full.
+     */
+    void enqueue(T&& item) {
+        if (count == msize) {
+            throw std::overflow_error("Queue is full");
+        }
+
+        size_t rearIndex = (frontIndex + count) % msize;
+        std::cout << "Enqueued element: " << item << std::endl;
+        queueArr[rearIndex] = std::move(item);
+        count++;
     }
 
     /**
@@ -66,6 +84,15 @@ public:
      */
     [[nodiscard]] bool isEmpty() const {
         return count == 0;
+    }
+
+    /**
+     * @brief Returns the current number of elements in the queue.
+     *
+     * @return The number of elements.
+     */
+    [[nodiscard]] size_t getSize() const {
+        return count;
     }
 
     /**
