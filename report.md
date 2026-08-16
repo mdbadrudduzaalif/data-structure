@@ -34,18 +34,25 @@ A comprehensive audit and refactoring of the DSABasics C++ repository was perfor
 - **Behavior:** Same runtime behavior; enhanced compile-time safety and self-documenting code.
 
 ### 5. Data Structures Enhancements (`data_structures/queue.cpp`, `data_structures/stack.cpp`)
-- **Why:** To document classes using Doxygen standards and enforce return-value checking on query methods.
-- **Impact:** Improved readability. Enforced safe usage of `isEmpty()` and `peek()`.
+- **Why:** To document classes using Doxygen standards, enforce return-value checking on query methods, prevent negative capacities, and optimize insertions.
+- **Impact:** Improved readability. Enforced safe usage of `isEmpty()` and `peek()`. Optimized insertions by supporting move semantics (`std::move`) in `push()` and `enqueue()`. Added `getSize()` query method. Added `static_assert(msize > 0)` for compile-time capacity validation.
 - **Trade-offs:** Required explicitly casting intentionally discarded returns in test code to `(void)` to prevent warnings.
 - **Affected Files:** `data_structures/queue.cpp`, `data_structures/stack.cpp`
-- **Behavior:** Same runtime behavior. Classes are now fully documented. Tests correctly silence compiler warnings.
+- **Behavior:** Same functional runtime behavior but with performance enhancements. Classes are now fully documented. Tests correctly silence compiler warnings.
+
+### 6. Additional Algorithm & Basics Enhancements (`algorithms/insertion_sort.cpp`, `basics/dsa1.cpp`)
+- **Why:** To optimize algorithms via move semantics and to prevent type narrowing in sizes.
+- **Impact:** Replaced copy operations in `insertionSort` with `std::move` to eliminate deep copies during element shifting. Migrated `countOddEven` logic to strictly use `size_t` rather than `int`.
+- **Trade-offs:** None.
+- **Affected Files:** `algorithms/insertion_sort.cpp`, `basics/dsa1.cpp`
+- **Behavior:** Improved runtime performance for complex types. Enhanced type safety.
 
 ---
 
 ## Deliverables Summary
 
-- **Critical issues fixed:** Eliminated false-positive null pointer dereference risks in algorithms when passed empty vectors (by checking `n <= 1` first). Fixed missing return value checks using `[[nodiscard]]`.
-- **Performance improvements:** Removed duplicate algorithmic logic by delegating `std::vector` processing to underlying `.data()` pointers. Loop indices updated to native machine word size (`size_t`).
+- **Critical issues fixed:** Eliminated false-positive null pointer dereference risks in algorithms when passed empty vectors (by checking `n <= 1` first). Fixed missing return value checks using `[[nodiscard]]`. Fixed type narrowing warnings by standardizing sizes to `size_t`.
+- **Performance improvements:** Removed duplicate algorithmic logic by delegating `std::vector` processing to underlying `.data()` pointers. Loop indices updated to native machine word size (`size_t`). Optimized `push()`, `enqueue()`, and `insertionSort` by implementing move semantics (`std::move`).
 - **Code quality improvements:** Consistent Doxygen-style documentation applied across data structures and utilities. Cleaned up duplication.
 - **Security improvements:** Added strict runtime validation in `printArray` and sort functions.
 - **Design improvements:** Unified sorting algorithm logic for array and vectors. Standardized C++17 build configurations.
