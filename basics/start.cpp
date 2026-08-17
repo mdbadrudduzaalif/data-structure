@@ -9,7 +9,7 @@
  * @param b The second integer.
  * @return A std::pair where the first element is the sum and the second is the difference (b - a).
  */
-[[nodiscard]] std::pair<int, int> getSumAndDifference(const int a, const int b) {
+[[nodiscard]] std::pair<int, int> getSumAndDifference(int a, int b) {
     int sum = a + b;
     int diff = b - a;
     return {sum, diff};
