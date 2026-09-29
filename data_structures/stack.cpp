@@ -19,6 +19,7 @@ public:
      * @brief Constructor for the Stack class.
      */
     Stack() {
+        static_assert(msize > 0, "Stack size must be greater than 0");
         stackArr.reserve(msize);
     }
 
@@ -34,6 +35,20 @@ public:
         }
         stackArr.push_back(item);
         std::cout << "pushed element " << item << std::endl;
+    }
+
+    /**
+     * @brief Adds an element to the top of the stack (rvalue reference overload).
+     *
+     * @param item The element to push.
+     * @throws std::overflow_error if the stack is full.
+     */
+    void push(T&& item) {
+        if (stackArr.size() == msize) {
+            throw std::overflow_error("Stack is full");
+        }
+        std::cout << "pushed element " << item << std::endl;
+        stackArr.push_back(std::move(item));
     }
 
     /**
@@ -71,6 +86,24 @@ public:
      */
     [[nodiscard]] bool isEmpty() const {
         return stackArr.empty();
+    }
+
+    /**
+     * @brief Returns the current number of elements in the stack.
+     *
+     * @return The size of the stack.
+     */
+    [[nodiscard]] size_t getSize() const {
+        return stackArr.size();
+    }
+
+    /**
+     * @brief Returns the maximum capacity of the stack.
+     *
+     * @return The maximum size of the stack.
+     */
+    [[nodiscard]] size_t getCapacity() const {
+        return msize;
     }
 };
 
