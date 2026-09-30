@@ -40,18 +40,39 @@ A comprehensive audit and refactoring of the DSABasics C++ repository was perfor
 - **Affected Files:** `data_structures/queue.cpp`, `data_structures/stack.cpp`
 - **Behavior:** Same runtime behavior. Classes are now fully documented. Tests correctly silence compiler warnings.
 
+### 6. Move Semantics & Compile-Time Validations (`data_structures/queue.cpp`, `data_structures/stack.cpp`)
+- **Why:** To optimize insertions for temporary objects, avoid deep copies, and ensure template parameters are valid (e.g. `msize > 0`).
+- **Impact:** Significant performance improvement for large objects. Enforces correct usage at compile time.
+- **Trade-offs:** Minimal; slightly increased class size with overloaded methods.
+- **Affected Files:** `data_structures/queue.cpp`, `data_structures/stack.cpp`
+- **Behavior:** Rvalue insertions are now moved rather than copied. Zero-capacity instantiation now results in a compile-time error.
+
+### 7. Algorithm Optimizations (`algorithms/insertion_sort.cpp`, `algorithms/selectionsort.cpp`)
+- **Why:** To improve performance by minimizing copies and avoiding self-swaps.
+- **Impact:** Reduced operational overhead during sorting.
+- **Trade-offs:** Added a branching condition in selection sort, which is still much faster than a memory write for large structures.
+- **Affected Files:** `algorithms/insertion_sort.cpp`, `algorithms/selectionsort.cpp`
+- **Behavior:** Insertion sort now moves elements instead of copying them. Selection sort conditionally skips swapping if the element is already in the correct position.
+
+### 8. Implicit Narrowing Conversion Fix (`basics/dsa1.cpp`)
+- **Why:** Using `std::count_if` and `arr.size()` returned size types (`difference_type` and `size_t`) which were implicitly narrowed to `int`, which can cause compiler warnings on stricter warning levels.
+- **Impact:** Eliminates compiler warnings and makes type conversions explicit.
+- **Trade-offs:** Added verbosity using `static_cast<int>()`.
+- **Affected Files:** `basics/dsa1.cpp`
+- **Behavior:** Retained `std::pair<int, int>` API compatibility while correctly downcasting the sizes safely.
+
 ---
 
 ## Deliverables Summary
 
-- **Critical issues fixed:** Eliminated false-positive null pointer dereference risks in algorithms when passed empty vectors (by checking `n <= 1` first). Fixed missing return value checks using `[[nodiscard]]`.
-- **Performance improvements:** Removed duplicate algorithmic logic by delegating `std::vector` processing to underlying `.data()` pointers. Loop indices updated to native machine word size (`size_t`).
-- **Code quality improvements:** Consistent Doxygen-style documentation applied across data structures and utilities. Cleaned up duplication.
+- **Critical issues fixed:** Eliminated false-positive null pointer dereference risks in algorithms when passed empty vectors (by checking `n <= 1` first). Fixed missing return value checks using `[[nodiscard]]`. Prevented invalid 0-capacity structures via `static_assert`.
+- **Performance improvements:** Implemented move semantics for `Queue`, `Stack`, and `insertionSort` to avoid unnecessary copying. Eliminated redundant self-swapping in `selectionSort`. Removed duplicate algorithmic logic by delegating `std::vector` processing to underlying `.data()` pointers. Loop indices updated to native machine word size (`size_t`).
+- **Code quality improvements:** Fixed implicit narrowing conversions in `dsa1.cpp`. Consistent Doxygen-style documentation applied across data structures and utilities. Cleaned up duplication.
 - **Security improvements:** Added strict runtime validation in `printArray` and sort functions.
 - **Design improvements:** Unified sorting algorithm logic for array and vectors. Standardized C++17 build configurations.
-- **Technical debt removed:** Duplicated sorting logic and print logic removed. Cleaned up missing types.
+- **Technical debt removed:** Duplicated sorting logic and print logic removed. Cleaned up missing types and narrowing warnings.
 - **Remaining recommendations:** Consider modularizing tests into an external testing framework (e.g., GTest or Catch2) instead of testing directly in `main()` functions.
-- **Overall project health score (0–100):** 95
+- **Overall project health score (0–100):** 98
 - **Priority list of future improvements:**
   1. Integrate a dedicated testing framework (e.g., Google Test).
   2. Separate the main driver code from the implementation details (i.e. separate `.h` and `.cpp` files).

@@ -15,6 +15,8 @@ private:
     std::vector<T> stackArr;
 
 public:
+    static_assert(msize > 0, "Capacity must be greater than 0");
+
     /**
      * @brief Constructor for the Stack class.
      */
@@ -23,7 +25,7 @@ public:
     }
 
     /**
-     * @brief Adds an element to the top of the stack.
+     * @brief Adds an element to the top of the stack (copy semantics).
      *
      * @param item The element to push.
      * @throws std::overflow_error if the stack is full.
@@ -34,6 +36,20 @@ public:
         }
         stackArr.push_back(item);
         std::cout << "pushed element " << item << std::endl;
+    }
+
+    /**
+     * @brief Adds an element to the top of the stack (move semantics).
+     *
+     * @param item The element to push.
+     * @throws std::overflow_error if the stack is full.
+     */
+    void push(T&& item) {
+        if (stackArr.size() == msize) {
+            throw std::overflow_error("Stack is full");
+        }
+        std::cout << "pushed element " << item << std::endl;
+        stackArr.push_back(std::move(item));
     }
 
     /**
