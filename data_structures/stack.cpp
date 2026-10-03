@@ -11,6 +11,7 @@
  */
 template <typename T, size_t msize = 7>
 class Stack {
+    static_assert(msize > 0, "Stack maximum size must be greater than 0");
 private:
     std::vector<T> stackArr;
 
@@ -37,6 +38,20 @@ public:
     }
 
     /**
+     * @brief Adds an element to the top of the stack using move semantics.
+     *
+     * @param item The element to push.
+     * @throws std::overflow_error if the stack is full.
+     */
+    void push(T&& item) {
+        if (stackArr.size() == msize) {
+            throw std::overflow_error("Stack is full");
+        }
+        std::cout << "pushed element " << item << std::endl;
+        stackArr.push_back(std::move(item));
+    }
+
+    /**
      * @brief Removes and returns the element at the top of the stack.
      *
      * @return The popped element.
@@ -46,7 +61,7 @@ public:
         if (stackArr.empty()) {
             throw std::underflow_error("Stack is empty");
         }
-        T item = stackArr.back();
+        T item = std::move(stackArr.back());
         stackArr.pop_back();
         return item;
     }
@@ -113,6 +128,14 @@ int main() {
 
     assert(s.peek() == 6);
     std::cout << "top element : " << s.peek() << std::endl;
+
+    // Test move semantics with std::string
+    Stack<std::string, 3> str_s;
+    std::string test_str = "hello";
+    str_s.push(std::move(test_str)); // push with rvalue
+    assert(str_s.peek() == "hello");
+    std::string popped_str = str_s.pop();
+    assert(popped_str == "hello");
 
     std::cout << "All Stack tests passed." << std::endl;
 
