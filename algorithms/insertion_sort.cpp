@@ -18,14 +18,14 @@ void insertionSort(T* arr, size_t n) {
     if (n <= 1) return;
     if (arr == nullptr) throw std::invalid_argument("Array pointer cannot be null when size > 1");
     for (size_t i = 1; i < n; i++) {
-        T key = arr[i];
+        T key = std::move(arr[i]);
         std::ptrdiff_t j = i - 1;
         
         while (j >= 0 && arr[j] > key) {
-            arr[j + 1] = arr[j];
+            arr[j + 1] = std::move(arr[j]);
             j--;
         }
-        arr[j + 1] = key;
+        arr[j + 1] = std::move(key);
     }
 }
 
@@ -69,6 +69,14 @@ int main() {
     for (size_t i = 0; i < vec.size() - 1; ++i) {
         assert(vec[i] <= vec[i + 1]);
     }
+
+    // Test with strings (move semantics check)
+    std::vector<std::string> str_vec = {"zebra", "apple", "mango", "banana"};
+    insertionSort(str_vec);
+    assert(str_vec[0] == "apple");
+    assert(str_vec[1] == "banana");
+    assert(str_vec[2] == "mango");
+    assert(str_vec[3] == "zebra");
 
     std::cout << "All insertionSort tests passed." << std::endl;
     
