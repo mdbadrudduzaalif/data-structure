@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <utility>
 #include <cassert>
 #include <stdexcept>
 
@@ -11,6 +12,8 @@
  */
 template <typename T, size_t msize = 7>
 class Stack {
+    static_assert(msize > 0, "Stack size must be greater than 0");
+
 private:
     std::vector<T> stackArr;
 
@@ -20,6 +23,20 @@ public:
      */
     Stack() {
         stackArr.reserve(msize);
+    }
+
+    /**
+     * @brief Adds an element to the top of the stack using move semantics.
+     *
+     * @param item The element to push.
+     * @throws std::overflow_error if the stack is full.
+     */
+    void push(T&& item) {
+        if (stackArr.size() == msize) {
+            throw std::overflow_error("Stack is full");
+        }
+        std::cout << "pushed element " << item << std::endl;
+        stackArr.push_back(std::move(item));
     }
 
     /**
@@ -71,6 +88,15 @@ public:
      */
     [[nodiscard]] bool isEmpty() const {
         return stackArr.empty();
+    }
+
+    /**
+     * @brief Gets the current size of the stack.
+     *
+     * @return The number of elements in the stack.
+     */
+    [[nodiscard]] size_t getSize() const {
+        return stackArr.size();
     }
 };
 
