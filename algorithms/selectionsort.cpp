@@ -2,9 +2,10 @@
 #include <vector>
 #include <cassert>
 #include <algorithm>
-#include "utils.h"
-
+#include <utility>
+#include <cstddef>
 #include <stdexcept>
+#include "utils.h"
 
 /**
  * @brief Sorts a C-style array using the Selection Sort algorithm.
