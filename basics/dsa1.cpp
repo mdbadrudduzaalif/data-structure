@@ -13,7 +13,7 @@
  */
 [[nodiscard]] std::pair<int, int> countOddEven(const std::vector<int>& arr) {
     int evenCount = std::count_if(arr.begin(), arr.end(), [](int num) { return num % 2 == 0; });
-    int oddCount = arr.size() - evenCount;
+    int oddCount = static_cast<int>(arr.size()) - evenCount;
     return {oddCount, evenCount};
 }
 
