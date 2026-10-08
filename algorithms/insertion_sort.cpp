@@ -2,6 +2,7 @@
 #include <vector>
 #include <cassert>
 #include <algorithm>
+#include <utility>
 #include "utils.h"
 
 #include <stdexcept>
@@ -19,7 +20,7 @@ void insertionSort(T* arr, size_t n) {
     if (arr == nullptr) throw std::invalid_argument("Array pointer cannot be null when size > 1");
     for (size_t i = 1; i < n; i++) {
         T key = arr[i];
-        std::ptrdiff_t j = i - 1;
+        std::ptrdiff_t j = static_cast<std::ptrdiff_t>(i) - 1;
         
         while (j >= 0 && arr[j] > key) {
             arr[j + 1] = arr[j];
