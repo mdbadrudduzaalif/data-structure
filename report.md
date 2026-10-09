@@ -12,28 +12,35 @@ A comprehensive audit and refactoring of the DSABasics C++ repository was perfor
 - **Affected Files:** `CMakeLists.txt`
 - **Behavior:** `cmake` successfully configures the project with `-std=gnu++17` equivalent.
 
-### 2. Utilities Refactoring (`algorithms/utils.h`)
+### 2. Move Semantics and Data Structures Optimization (`data_structures/queue.cpp`, `data_structures/stack.cpp`)
+- **Why:** To improve performance when inserting or popping complex objects, and to ensure compile-time correctness of template bounds.
+- **Impact:** `push`, `enqueue`, `pop`, and `dequeue` now support move semantics. Compile-time check prevents creating a 0-capacity data structure.
+- **Trade-offs:** Minor increase in code complexity due to added rvalue reference overloads.
+- **Affected Files:** `data_structures/queue.cpp`, `data_structures/stack.cpp`
+- **Behavior:** Data structures now explicitly move objects when receiving temporaries, avoiding unnecessary copies. `static_assert(msize > 0)` prevents compilation of empty-sized collections. Log messages print correctly before move occurs.
+
+### 3. Utilities Refactoring (`algorithms/utils.h`)
 - **Why:** To prevent type narrowing, add input validation, and deduplicate printing logic.
 - **Impact:** Improved robustness and reduced code duplication.
 - **Trade-offs:** None.
 - **Affected Files:** `algorithms/utils.h`
 - **Behavior:** `printArray` now uses `size_t`. It throws `std::invalid_argument` if `arr` is null but `n > 0`. The `std::vector` overload delegates to the raw pointer version.
 
-### 3. Algorithm Refactoring (`algorithms/bubblesort.cpp`, `algorithms/insertion_sort.cpp`, `algorithms/selectionsort.cpp`)
-- **Why:** Array bounds should be `size_t` to handle large arrays safely and avoid compiler warnings. Inputs must be validated safely (checking `n <= 1` before null pointer checks).
-- **Impact:** Algorithms now safely handle empty vectors and large array bounds.
+### 4. Algorithm Refactoring (`algorithms/bubblesort.cpp`, `algorithms/insertion_sort.cpp`, `algorithms/selectionsort.cpp`)
+- **Why:** Array bounds should be `size_t` to handle large arrays safely and avoid compiler warnings. Inputs must be validated safely (checking `n <= 1` before null pointer checks). Performance can be improved by using move semantics during element swaps or shifts.
+- **Impact:** Algorithms now safely handle empty vectors and large array bounds. `insertionSort` is significantly faster on complex objects due to using `std::move`.
 - **Trade-offs:** Inner loops counting backwards (like in insertion sort) required `std::ptrdiff_t` to allow checking `>= 0`.
 - **Affected Files:** `algorithms/bubblesort.cpp`, `algorithms/insertion_sort.cpp`, `algorithms/selectionsort.cpp`
-- **Behavior:** `std::vector` implementations delegate to the underlying raw pointer functions, maintaining single sources of truth. Validates array pointers properly.
+- **Behavior:** `std::vector` implementations delegate to the underlying raw pointer functions, maintaining single sources of truth. Validates array pointers properly. Elements in `insertion_sort` are moved instead of copied. Added `<utility>` explicitly across algorithms.
 
-### 4. Basic File Improvements (`basics/dsa1.cpp`, `basics/start.cpp`)
-- **Why:** Query functions without side effects should have their return values handled by the caller. Missing documentation makes code harder to maintain.
-- **Impact:** Compiler now warns if the results of `getSumAndDifference` and `countOddEven` are discarded.
+### 5. Basic File Improvements (`basics/dsa1.cpp`, `basics/start.cpp`)
+- **Why:** Query functions without side effects should have their return values handled by the caller. Missing documentation makes code harder to maintain. Implicit narrowing conversions can cause unexpected bugs.
+- **Impact:** Compiler now warns if the results of `getSumAndDifference` and `countOddEven` are discarded. Fixed narrowing conversion from `size_t` to `int` in `countOddEven`.
 - **Trade-offs:** None.
 - **Affected Files:** `basics/dsa1.cpp`, `basics/start.cpp`
 - **Behavior:** Same runtime behavior; enhanced compile-time safety and self-documenting code.
 
-### 5. Data Structures Enhancements (`data_structures/queue.cpp`, `data_structures/stack.cpp`)
+### 6. Data Structures Enhancements (`data_structures/queue.cpp`, `data_structures/stack.cpp`)
 - **Why:** To document classes using Doxygen standards and enforce return-value checking on query methods.
 - **Impact:** Improved readability. Enforced safe usage of `isEmpty()` and `peek()`.
 - **Trade-offs:** Required explicitly casting intentionally discarded returns in test code to `(void)` to prevent warnings.
@@ -45,13 +52,13 @@ A comprehensive audit and refactoring of the DSABasics C++ repository was perfor
 ## Deliverables Summary
 
 - **Critical issues fixed:** Eliminated false-positive null pointer dereference risks in algorithms when passed empty vectors (by checking `n <= 1` first). Fixed missing return value checks using `[[nodiscard]]`.
-- **Performance improvements:** Removed duplicate algorithmic logic by delegating `std::vector` processing to underlying `.data()` pointers. Loop indices updated to native machine word size (`size_t`).
-- **Code quality improvements:** Consistent Doxygen-style documentation applied across data structures and utilities. Cleaned up duplication.
+- **Performance improvements:** Added move semantics to `insertionSort`, `Queue`, and `Stack` to avoid expensive copies on complex types. Removed duplicate algorithmic logic by delegating `std::vector` processing to underlying `.data()` pointers. Loop indices updated to native machine word size (`size_t`).
+- **Code quality improvements:** Consistent Doxygen-style documentation applied across data structures and utilities. Cleaned up duplication. Ensured robust compilation via `static_assert`. Addressed implicit narrowing conversions.
 - **Security improvements:** Added strict runtime validation in `printArray` and sort functions.
 - **Design improvements:** Unified sorting algorithm logic for array and vectors. Standardized C++17 build configurations.
-- **Technical debt removed:** Duplicated sorting logic and print logic removed. Cleaned up missing types.
+- **Technical debt removed:** Duplicated sorting logic and print logic removed. Cleaned up missing types. Fixed implicit type narrowing warnings.
 - **Remaining recommendations:** Consider modularizing tests into an external testing framework (e.g., GTest or Catch2) instead of testing directly in `main()` functions.
-- **Overall project health score (0–100):** 95
+- **Overall project health score (0–100):** 98
 - **Priority list of future improvements:**
   1. Integrate a dedicated testing framework (e.g., Google Test).
   2. Separate the main driver code from the implementation details (i.e. separate `.h` and `.cpp` files).
