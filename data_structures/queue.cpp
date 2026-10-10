@@ -2,6 +2,7 @@
 #include <vector>
 #include <cassert>
 #include <stdexcept>
+#include <utility>
 
 /**
  * @brief A generic Queue data structure with a maximum size.
@@ -11,6 +12,7 @@
  */
 template <typename T, size_t msize = 7>
 class Queue {
+    static_assert(msize > 0, "Capacity must be > 0");
 private:
     std::vector<T> queueArr;
     size_t frontIndex;
@@ -60,12 +62,38 @@ public:
     }
 
     /**
+     * @brief Adds an element to the rear of the queue (rvalue reference overload).
+     *
+     * @param item The element to enqueue.
+     * @throws std::overflow_error if the queue is full.
+     */
+    void enqueue(T&& item) {
+        if (count == msize) {
+            throw std::overflow_error("Queue is full");
+        }
+
+        std::cout << "Enqueued element: " << item << std::endl;
+        size_t rearIndex = (frontIndex + count) % msize;
+        queueArr[rearIndex] = std::move(item);
+        count++;
+    }
+
+    /**
      * @brief Checks if the queue is empty.
      *
      * @return true if the queue is empty, false otherwise.
      */
     [[nodiscard]] bool isEmpty() const {
         return count == 0;
+    }
+
+    /**
+     * @brief Returns the number of elements in the queue.
+     *
+     * @return The number of elements in the queue.
+     */
+    [[nodiscard]] size_t getSize() const {
+        return count;
     }
 
     /**
