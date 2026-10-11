@@ -40,18 +40,25 @@ A comprehensive audit and refactoring of the DSABasics C++ repository was perfor
 - **Affected Files:** `data_structures/queue.cpp`, `data_structures/stack.cpp`
 - **Behavior:** Same runtime behavior. Classes are now fully documented. Tests correctly silence compiler warnings.
 
+### 6. Phase 2 Improvements (`basics/dsa1.cpp`, `algorithms/insertion_sort.cpp`, `data_structures/queue.cpp`, `data_structures/stack.cpp`)
+- **Why:** Resolve implicit conversion warnings in size comparisons. Implement robust compile-time assertions and add move semantics for optimizations. Extend APIs with proper size queries.
+- **Impact:** Compiler warnings are resolved. Data structures now properly support optimized rvalue reference insertions. Prevented instantiation of generic data structures with 0 max capacity.
+- **Trade-offs:** None.
+- **Affected Files:** `basics/dsa1.cpp`, `algorithms/insertion_sort.cpp`, `data_structures/queue.cpp`, `data_structures/stack.cpp`
+- **Behavior:** Fixed narrowing conversion warnings by applying `static_cast` correctly. Added `enqueue(T&&)` and `push(T&&)` using `std::move`. Added `getSize()`. Added `static_assert(msize > 0)`.
+
 ---
 
 ## Deliverables Summary
 
-- **Critical issues fixed:** Eliminated false-positive null pointer dereference risks in algorithms when passed empty vectors (by checking `n <= 1` first). Fixed missing return value checks using `[[nodiscard]]`.
-- **Performance improvements:** Removed duplicate algorithmic logic by delegating `std::vector` processing to underlying `.data()` pointers. Loop indices updated to native machine word size (`size_t`).
-- **Code quality improvements:** Consistent Doxygen-style documentation applied across data structures and utilities. Cleaned up duplication.
+- **Critical issues fixed:** Eliminated false-positive null pointer dereference risks in algorithms when passed empty vectors (by checking `n <= 1` first). Fixed missing return value checks using `[[nodiscard]]`. Prevented invalid state instantiations with `static_assert(msize > 0)`.
+- **Performance improvements:** Removed duplicate algorithmic logic by delegating `std::vector` processing to underlying `.data()` pointers. Loop indices updated to native machine word size (`size_t`). Added move semantic support via `std::move` and rvalue reference overloads in data structures.
+- **Code quality improvements:** Consistent Doxygen-style documentation applied across data structures and utilities. Cleaned up duplication. Resolved narrowing and mixed conversion warnings with explicit `static_cast`.
 - **Security improvements:** Added strict runtime validation in `printArray` and sort functions.
-- **Design improvements:** Unified sorting algorithm logic for array and vectors. Standardized C++17 build configurations.
-- **Technical debt removed:** Duplicated sorting logic and print logic removed. Cleaned up missing types.
-- **Remaining recommendations:** Consider modularizing tests into an external testing framework (e.g., GTest or Catch2) instead of testing directly in `main()` functions.
-- **Overall project health score (0–100):** 95
+- **Design improvements:** Unified sorting algorithm logic for array and vectors. Standardized C++17 build configurations. Enhanced encapsulation by adding standard query method (`getSize()`).
+- **Technical debt removed:** Duplicated sorting logic and print logic removed. Cleaned up missing types. Fixed implicit casting.
+- **Remaining recommendations:** Consider modularizing tests into an external testing framework (e.g., GTest or Catch2) instead of testing directly in `main()` functions. Consider extracting templates into headers.
+- **Overall project health score (0–100):** 98
 - **Priority list of future improvements:**
   1. Integrate a dedicated testing framework (e.g., Google Test).
   2. Separate the main driver code from the implementation details (i.e. separate `.h` and `.cpp` files).
