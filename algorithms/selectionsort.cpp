@@ -2,6 +2,7 @@
 #include <vector>
 #include <cassert>
 #include <algorithm>
+#include <utility>
 #include "utils.h"
 
 #include <stdexcept>
@@ -24,7 +25,9 @@ void selectionSort(T* arr, size_t n) {
                 min = j;
             }
         }
-        std::swap(arr[i], arr[min]);
+        if (min != i) {
+            std::swap(arr[i], arr[min]);
+        }
     }
 }
 
