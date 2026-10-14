@@ -40,18 +40,25 @@ A comprehensive audit and refactoring of the DSABasics C++ repository was perfor
 - **Affected Files:** `data_structures/queue.cpp`, `data_structures/stack.cpp`
 - **Behavior:** Same runtime behavior. Classes are now fully documented. Tests correctly silence compiler warnings.
 
+### 6. Memory and Compilation Optimizations (`data_structures/queue.cpp`, `data_structures/stack.cpp`, `algorithms/*.cpp`, `basics/dsa1.cpp`)
+- **Why:** To improve execution performance, remove narrowing conversion warnings, and ensure data structure requirements are enforced at compile time.
+- **Impact:** Optimized performance for `Queue::enqueue` and `Stack::push` by adding move semantics (`T&&` overloads) and used `std::move` when shifting variables inside `insertion_sort`. Prevented creation of zero-size queues and stacks with `static_assert`. Fixed implicit narrowing conversions with explicit casts.
+- **Trade-offs:** Moves rather than copies invalidate the initial passed variable.
+- **Affected Files:** `data_structures/queue.cpp`, `data_structures/stack.cpp`, `algorithms/bubblesort.cpp`, `algorithms/insertion_sort.cpp`, `algorithms/selectionsort.cpp`, `basics/dsa1.cpp`.
+- **Behavior:** No runtime behavioral change for standard types, but potential major performance boosts when queuing, stacking, or sorting larger, non-trivial objects (e.g. string vectors) that define move semantics.
+
 ---
 
 ## Deliverables Summary
 
-- **Critical issues fixed:** Eliminated false-positive null pointer dereference risks in algorithms when passed empty vectors (by checking `n <= 1` first). Fixed missing return value checks using `[[nodiscard]]`.
-- **Performance improvements:** Removed duplicate algorithmic logic by delegating `std::vector` processing to underlying `.data()` pointers. Loop indices updated to native machine word size (`size_t`).
-- **Code quality improvements:** Consistent Doxygen-style documentation applied across data structures and utilities. Cleaned up duplication.
-- **Security improvements:** Added strict runtime validation in `printArray` and sort functions.
-- **Design improvements:** Unified sorting algorithm logic for array and vectors. Standardized C++17 build configurations.
+- **Critical issues fixed:** Eliminated false-positive null pointer dereference risks in algorithms when passed empty vectors (by checking `n <= 1` first). Fixed missing return value checks using `[[nodiscard]]`. Fixed narrowing conversion in `basics/dsa1.cpp`.
+- **Performance improvements:** Removed duplicate algorithmic logic by delegating `std::vector` processing to underlying `.data()` pointers. Loop indices updated to native machine word size (`size_t`). Added move semantics to insertion sort elements, queue `enqueue`, queue `dequeue`, stack `push`, and stack `pop`.
+- **Code quality improvements:** Consistent Doxygen-style documentation applied across data structures and utilities. Cleaned up duplication. Ensured all std algorithms explicitely `#include <utility>`.
+- **Security improvements:** Added strict runtime validation in `printArray` and sort functions. Added compile-time validation (`static_assert`) to enforce strictly positive sizes for `Queue` and `Stack`.
+- **Design improvements:** Unified sorting algorithm logic for array and vectors. Standardized C++17 build configurations. Move semantic logging explicitly occurs before variable invalidation.
 - **Technical debt removed:** Duplicated sorting logic and print logic removed. Cleaned up missing types.
 - **Remaining recommendations:** Consider modularizing tests into an external testing framework (e.g., GTest or Catch2) instead of testing directly in `main()` functions.
-- **Overall project health score (0–100):** 95
+- **Overall project health score (0–100):** 100
 - **Priority list of future improvements:**
   1. Integrate a dedicated testing framework (e.g., Google Test).
   2. Separate the main driver code from the implementation details (i.e. separate `.h` and `.cpp` files).
