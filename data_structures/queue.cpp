@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <utility>
 #include <cassert>
 #include <stdexcept>
 
@@ -21,7 +22,25 @@ public:
      * @brief Constructor for the Queue class.
      */
     Queue() : frontIndex(0), count(0) {
+        static_assert(msize > 0, "size must be greater than 0");
         queueArr.resize(msize);
+    }
+
+    /**
+     * @brief Adds an element to the rear of the queue (move semantics).
+     *
+     * @param item The element to enqueue.
+     * @throws std::overflow_error if the queue is full.
+     */
+    void enqueue(T&& item) {
+        if (count == msize) {
+            throw std::overflow_error("Queue is full");
+        }
+
+        size_t rearIndex = (frontIndex + count) % msize;
+        std::cout << "Enqueued element: " << item << std::endl;
+        queueArr[rearIndex] = std::move(item);
+        count++;
     }
 
     /**
@@ -52,7 +71,7 @@ public:
             throw std::underflow_error("Queue is empty");
         }
 
-        T item = queueArr[frontIndex];
+        T item = std::move(queueArr[frontIndex]);
         frontIndex = (frontIndex + 1) % msize;
         count--;
         std::cout << "Dequeued element: " << item << std::endl;
