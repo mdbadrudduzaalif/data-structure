@@ -2,6 +2,7 @@
 #include <vector>
 #include <cassert>
 #include <stdexcept>
+#include <utility>
 
 /**
  * @brief A generic Stack data structure with a maximum size.
@@ -19,7 +20,22 @@ public:
      * @brief Constructor for the Stack class.
      */
     Stack() {
+        static_assert(msize > 0, "Stack capacity must be greater than 0");
         stackArr.reserve(msize);
+    }
+
+    /**
+     * @brief Adds an rvalue element to the top of the stack using move semantics.
+     *
+     * @param item The element to push.
+     * @throws std::overflow_error if the stack is full.
+     */
+    void push(T&& item) {
+        if (stackArr.size() == msize) {
+            throw std::overflow_error("Stack is full");
+        }
+        std::cout << "pushed element " << item << std::endl;
+        stackArr.push_back(std::move(item));
     }
 
     /**

@@ -56,3 +56,23 @@ A comprehensive audit and refactoring of the DSABasics C++ repository was perfor
   1. Integrate a dedicated testing framework (e.g., Google Test).
   2. Separate the main driver code from the implementation details (i.e. separate `.h` and `.cpp` files).
   3. Set up a CI pipeline (e.g., GitHub Actions) to automate CMake builds and tests.
+### 6. Queue and Stack Move Semantics (`data_structures/queue.cpp`, `data_structures/stack.cpp`)
+- **Why:** To improve performance by avoiding unnecessary deep copies when inserting temporary (rvalue) objects.
+- **Impact:** `push` and `enqueue` operations can now move objects into the underlying data structure, reducing overhead.
+- **Trade-offs:** Adds some minor code complexity with an additional overload.
+- **Affected Files:** `data_structures/queue.cpp`, `data_structures/stack.cpp`
+- **Behavior:** The classes now gracefully handle rvalues (like temporaries) efficiently without copying. Correct order of logging and `std::move` ensures moved-from state is not printed. Added compile-time assertions to guarantee `msize > 0`.
+
+### 7. Narrowing Conversions Fixed (`basics/dsa1.cpp`)
+- **Why:** Mixing `size_t` and `int` can lead to narrowing conversion warnings and potential data loss if types mismatch size scales significantly.
+- **Impact:** Eliminated potential narrowing warnings for size calculations in array length comparisons.
+- **Trade-offs:** Needs explicit `static_cast<int>` casting, but makes the intent clear.
+- **Affected Files:** `basics/dsa1.cpp`
+- **Behavior:** Operates identical to before, just without compiler ambiguity and with robust data types.
+
+### 8. Insertion Sort Move Operations (`algorithms/insertion_sort.cpp`)
+- **Why:** `insertion_sort` shifts objects frequently, benefiting from move semantics for heavy objects rather than performing deep copies during swaps.
+- **Impact:** Shifting operations in insertion sort are now strictly using move assignments, accelerating sorting of expensive-to-copy types.
+- **Trade-offs:** Slight reduction in code readability due to repeated `std::move` usage.
+- **Affected Files:** `algorithms/insertion_sort.cpp`
+- **Behavior:** Correctly moves elements to shift and sort, while ensuring proper loop boundary logic using `std::ptrdiff_t`.
