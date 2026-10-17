@@ -2,6 +2,7 @@
 #include <vector>
 #include <cassert>
 #include <stdexcept>
+#include <utility>
 
 /**
  * @brief A generic Stack data structure with a maximum size.
@@ -11,6 +12,7 @@
  */
 template <typename T, size_t msize = 7>
 class Stack {
+    static_assert(msize > 0, "Stack size must be strictly positive");
 private:
     std::vector<T> stackArr;
 
@@ -34,6 +36,20 @@ public:
         }
         stackArr.push_back(item);
         std::cout << "pushed element " << item << std::endl;
+    }
+
+    /**
+     * @brief Adds an element to the top of the stack using move semantics.
+     *
+     * @param item The element to push.
+     * @throws std::overflow_error if the stack is full.
+     */
+    void push(T&& item) {
+        if (stackArr.size() == msize) {
+            throw std::overflow_error("Stack is full");
+        }
+        std::cout << "pushed element " << item << std::endl;
+        stackArr.push_back(std::move(item));
     }
 
     /**
@@ -71,6 +87,15 @@ public:
      */
     [[nodiscard]] bool isEmpty() const {
         return stackArr.empty();
+    }
+
+    /**
+     * @brief Returns the number of elements in the stack.
+     *
+     * @return The number of elements.
+     */
+    [[nodiscard]] size_t getSize() const {
+        return stackArr.size();
     }
 };
 
