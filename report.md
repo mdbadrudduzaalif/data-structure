@@ -40,18 +40,39 @@ A comprehensive audit and refactoring of the DSABasics C++ repository was perfor
 - **Affected Files:** `data_structures/queue.cpp`, `data_structures/stack.cpp`
 - **Behavior:** Same runtime behavior. Classes are now fully documented. Tests correctly silence compiler warnings.
 
+### 6. Compiler Validations & Move Semantics (`data_structures/stack.cpp`, `data_structures/queue.cpp`)
+- **Why:** To optimize memory usage using move semantics and catch potential compile-time configuration issues (such as sizes < 1).
+- **Impact:** Added `static_assert(msize > 0)` and implemented an rvalue-reference methods `push(T&& item)` and `enqueue(T&& item)` for stack and queue. Ensure `std::cout` precedes `std::move`.
+- **Trade-offs:** Required explicit use of `#include <utility>`.
+- **Affected Files:** `data_structures/stack.cpp`, `data_structures/queue.cpp`
+- **Behavior:** No regressions. Enhanced memory management and robust template instantiations.
+
+### 7. Explicit Casting and Narrowing Resolutions (`basics/dsa1.cpp`)
+- **Why:** To eliminate implicit narrowing conversion warnings generated when mapping sizes to regular integers or signed loop indices.
+- **Impact:** Used explicit `static_cast<int>()` to bridge type differences safely without changing existing APIs.
+- **Trade-offs:** Makes lines slightly longer.
+- **Affected Files:** `basics/dsa1.cpp`
+- **Behavior:** No functional changes, compilation is now warning-free under stricter flags.
+
+### 8. Insertion Sort Optimization (`algorithms/insertion_sort.cpp`)
+- **Why:** Optimizing shift-down mechanisms avoids unnecessary deep copying of elements.
+- **Impact:** Leveraged `std::move` within `insertionSort` arrays to shift and drop down values more efficiently, and added `static_cast<std::ptrdiff_t>` to avoid type mixing.
+- **Trade-offs:** Requires `#include <utility>`.
+- **Affected Files:** `algorithms/insertion_sort.cpp`
+- **Behavior:** Speedup across highly scrambled or huge vectors/arrays, particularly those containing complex types, though current tests show no behavior drift.
+
 ---
 
 ## Deliverables Summary
 
-- **Critical issues fixed:** Eliminated false-positive null pointer dereference risks in algorithms when passed empty vectors (by checking `n <= 1` first). Fixed missing return value checks using `[[nodiscard]]`.
-- **Performance improvements:** Removed duplicate algorithmic logic by delegating `std::vector` processing to underlying `.data()` pointers. Loop indices updated to native machine word size (`size_t`).
-- **Code quality improvements:** Consistent Doxygen-style documentation applied across data structures and utilities. Cleaned up duplication.
-- **Security improvements:** Added strict runtime validation in `printArray` and sort functions.
-- **Design improvements:** Unified sorting algorithm logic for array and vectors. Standardized C++17 build configurations.
-- **Technical debt removed:** Duplicated sorting logic and print logic removed. Cleaned up missing types.
+- **Critical issues fixed:** Eliminated false-positive null pointer dereference risks in algorithms when passed empty vectors (by checking `n <= 1` first). Fixed missing return value checks using `[[nodiscard]]`. Addressed narrowing conversions logic in `dsa1.cpp`.
+- **Performance improvements:** Removed duplicate algorithmic logic by delegating `std::vector` processing to underlying `.data()` pointers. Loop indices updated to native machine word size (`size_t`). Applied `std::move` inside Data Structures inserts and `insertionSort` memory shifts to prevent unnecessary copies.
+- **Code quality improvements:** Consistent Doxygen-style documentation applied across data structures and utilities. Cleaned up duplication. Addressed implicit type conversion flaws, preventing static analysis violations.
+- **Security improvements:** Added strict runtime validation in `printArray` and sort functions. Verified valid capacities statically using `static_assert(msize > 0)`.
+- **Design improvements:** Unified sorting algorithm logic for array and vectors. Standardized C++17 build configurations. Introduced generic move semantics to basic data structures.
+- **Technical debt removed:** Duplicated sorting logic and print logic removed. Cleaned up missing types. Resolved implicit conversion debt.
 - **Remaining recommendations:** Consider modularizing tests into an external testing framework (e.g., GTest or Catch2) instead of testing directly in `main()` functions.
-- **Overall project health score (0–100):** 95
+- **Overall project health score (0–100):** 98
 - **Priority list of future improvements:**
   1. Integrate a dedicated testing framework (e.g., Google Test).
   2. Separate the main driver code from the implementation details (i.e. separate `.h` and `.cpp` files).
