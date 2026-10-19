@@ -2,6 +2,7 @@
 #include <vector>
 #include <cassert>
 #include <stdexcept>
+#include <utility>
 
 /**
  * @brief A generic Stack data structure with a maximum size.
@@ -19,6 +20,7 @@ public:
      * @brief Constructor for the Stack class.
      */
     Stack() {
+        static_assert(msize > 0, "Capacity must be greater than 0");
         stackArr.reserve(msize);
     }
 
@@ -34,6 +36,20 @@ public:
         }
         stackArr.push_back(item);
         std::cout << "pushed element " << item << std::endl;
+    }
+
+    /**
+     * @brief Adds an element to the top of the stack using move semantics.
+     *
+     * @param item The element to push.
+     * @throws std::overflow_error if the stack is full.
+     */
+    void push(T&& item) {
+        if (stackArr.size() == msize) {
+            throw std::overflow_error("Stack is full");
+        }
+        std::cout << "pushed element " << item << std::endl;
+        stackArr.push_back(std::move(item));
     }
 
     /**
@@ -72,6 +88,15 @@ public:
     [[nodiscard]] bool isEmpty() const {
         return stackArr.empty();
     }
+
+    /**
+     * @brief Returns the current number of elements in the stack.
+     *
+     * @return The size of the stack.
+     */
+    [[nodiscard]] size_t getSize() const {
+        return stackArr.size();
+    }
 };
 
 int main() {
@@ -90,13 +115,16 @@ int main() {
         std::cout << "Expected exception: " << e.what() << std::endl;
     }
 
-    s.push(1);
-    s.push(2);
+    int a = 1;
+    s.push(a);
+    s.push(2); // testing rvalue reference push
     s.push(3);
     s.push(4);
     s.push(5);
     s.push(6);
     s.push(7);
+
+    assert(s.getSize() == 7);
     try {
         s.push(8); // Overflow expected here
     } catch (const std::overflow_error& e) {
