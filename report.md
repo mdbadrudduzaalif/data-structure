@@ -34,24 +34,31 @@ A comprehensive audit and refactoring of the DSABasics C++ repository was perfor
 - **Behavior:** Same runtime behavior; enhanced compile-time safety and self-documenting code.
 
 ### 5. Data Structures Enhancements (`data_structures/queue.cpp`, `data_structures/stack.cpp`)
-- **Why:** To document classes using Doxygen standards and enforce return-value checking on query methods.
-- **Impact:** Improved readability. Enforced safe usage of `isEmpty()` and `peek()`.
-- **Trade-offs:** Required explicitly casting intentionally discarded returns in test code to `(void)` to prevent warnings.
+- **Why:** To document classes using Doxygen standards, enforce return-value checking on query methods, provide move semantics for performance, and enforce compile-time validation of template parameters.
+- **Impact:** Improved readability, enforced safe usage of `isEmpty()` and `peek()`, and enhanced performance with `std::move`.
+- **Trade-offs:** Required explicitly casting intentionally discarded returns in test code to `(void)` to prevent warnings. Added complexity through rvalue reference overloads.
 - **Affected Files:** `data_structures/queue.cpp`, `data_structures/stack.cpp`
-- **Behavior:** Same runtime behavior. Classes are now fully documented. Tests correctly silence compiler warnings.
+- **Behavior:** Same runtime behavior. Classes are now fully documented, with `static_assert` enforcing capacity greater than 0. Move semantics ensure optimized insertion, and tests correctly silence compiler warnings.
+
+### 6. Explicit inclusion of `<utility>` and Move Semantics in Algorithms (`algorithms/insertion_sort.cpp`, `algorithms/bubblesort.cpp`, `algorithms/selectionsort.cpp`)
+- **Why:** To ensure explicit access to `std::move` and `std::swap` without relying on transitive includes. Using `std::move` in insertion sort optimizes moving the elements.
+- **Impact:** Increased portability and strict compilation standards. Enhanced performance during shifts in insertion sort.
+- **Trade-offs:** None.
+- **Affected Files:** `algorithms/insertion_sort.cpp`, `algorithms/bubblesort.cpp`, `algorithms/selectionsort.cpp`
+- **Behavior:** Same runtime behavior; optimized moving.
 
 ---
 
 ## Deliverables Summary
 
-- **Critical issues fixed:** Eliminated false-positive null pointer dereference risks in algorithms when passed empty vectors (by checking `n <= 1` first). Fixed missing return value checks using `[[nodiscard]]`.
-- **Performance improvements:** Removed duplicate algorithmic logic by delegating `std::vector` processing to underlying `.data()` pointers. Loop indices updated to native machine word size (`size_t`).
-- **Code quality improvements:** Consistent Doxygen-style documentation applied across data structures and utilities. Cleaned up duplication.
+- **Critical issues fixed:** Eliminated false-positive null pointer dereference risks in algorithms when passed empty vectors (by checking `n <= 1` first). Fixed missing return value checks using `[[nodiscard]]`. Explicitly included `<utility>` where `std::swap` or `std::move` are used.
+- **Performance improvements:** Removed duplicate algorithmic logic by delegating `std::vector` processing to underlying `.data()` pointers. Loop indices updated to native machine word size (`size_t`). Implemented move semantics (`T&&`) for inserting data into `Stack` and `Queue` data structures, and during shifting in `insertionSort`.
+- **Code quality improvements:** Consistent Doxygen-style documentation applied across data structures and utilities. Cleaned up duplication. Added `static_assert` compile-time checks for queue and stack capacities.
 - **Security improvements:** Added strict runtime validation in `printArray` and sort functions.
 - **Design improvements:** Unified sorting algorithm logic for array and vectors. Standardized C++17 build configurations.
-- **Technical debt removed:** Duplicated sorting logic and print logic removed. Cleaned up missing types.
+- **Technical debt removed:** Duplicated sorting logic and print logic removed. Cleaned up missing types. Implicit includes relied upon were explicitly specified.
 - **Remaining recommendations:** Consider modularizing tests into an external testing framework (e.g., GTest or Catch2) instead of testing directly in `main()` functions.
-- **Overall project health score (0–100):** 95
+- **Overall project health score (0–100):** 98
 - **Priority list of future improvements:**
   1. Integrate a dedicated testing framework (e.g., Google Test).
   2. Separate the main driver code from the implementation details (i.e. separate `.h` and `.cpp` files).
