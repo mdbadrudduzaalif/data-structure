@@ -34,24 +34,31 @@ A comprehensive audit and refactoring of the DSABasics C++ repository was perfor
 - **Behavior:** Same runtime behavior; enhanced compile-time safety and self-documenting code.
 
 ### 5. Data Structures Enhancements (`data_structures/queue.cpp`, `data_structures/stack.cpp`)
-- **Why:** To document classes using Doxygen standards and enforce return-value checking on query methods.
-- **Impact:** Improved readability. Enforced safe usage of `isEmpty()` and `peek()`.
+- **Why:** To document classes using Doxygen standards, enforce compile-time safety on template constraints (`static_assert(msize > 0)`), add `std::move` semantics to prevent deep copies during enqueuing/pushing, and enforce return-value checking on query methods.
+- **Impact:** Improved readability. Enforced safe usage of `isEmpty()` and `peek()`. Better memory efficiency by leveraging rvalue-references (`T&&`).
 - **Trade-offs:** Required explicitly casting intentionally discarded returns in test code to `(void)` to prevent warnings.
 - **Affected Files:** `data_structures/queue.cpp`, `data_structures/stack.cpp`
-- **Behavior:** Same runtime behavior. Classes are now fully documented. Tests correctly silence compiler warnings.
+- **Behavior:** Same runtime behavior but with optimized performance and improved compile-time validation. Classes are now fully documented.
+
+### 6. Additional Optimizations
+- **Why:** To address implicit narrowing conversions (e.g., from `std::count_if` to `int`), eliminate redundant loops in selection sort, and remove duplicate copies during inner swap logic in insertion sort.
+- **Impact:** Compiler warnings for implicit narrowing conversions resolved. Algorithms optimized via fewer operations.
+- **Trade-offs:** None.
+- **Affected Files:** `basics/dsa1.cpp`, `algorithms/selectionsort.cpp`, `algorithms/insertion_sort.cpp`
+- **Behavior:** Selection sort bounds updated (inner swap executes only when `min != i`). Insertion sort now safely casts indices and moves `key` seamlessly.
 
 ---
 
 ## Deliverables Summary
 
-- **Critical issues fixed:** Eliminated false-positive null pointer dereference risks in algorithms when passed empty vectors (by checking `n <= 1` first). Fixed missing return value checks using `[[nodiscard]]`.
-- **Performance improvements:** Removed duplicate algorithmic logic by delegating `std::vector` processing to underlying `.data()` pointers. Loop indices updated to native machine word size (`size_t`).
-- **Code quality improvements:** Consistent Doxygen-style documentation applied across data structures and utilities. Cleaned up duplication.
-- **Security improvements:** Added strict runtime validation in `printArray` and sort functions.
+- **Critical issues fixed:** Eliminated false-positive null pointer dereference risks in algorithms when passed empty vectors (by checking `n <= 1` first). Fixed missing return value checks using `[[nodiscard]]`. Addressed implicit narrowing conversions. Fixed compilation bounds missing `static_assert`.
+- **Performance improvements:** Added `std::move` to Stack/Queue methods. Selection sort loop iterations conditionally restrict unneeded `swap` execution. Insertion sort safely leverages `std::move` during shifts. Removed duplicate algorithmic logic by delegating `std::vector` processing to underlying `.data()` pointers. Loop indices updated to native machine word size (`size_t`).
+- **Code quality improvements:** Consistent Doxygen-style documentation applied across data structures and utilities. Cleaned up duplication. Better C++ type safety achieved using explicit casting (`static_cast<int>`).
+- **Security improvements:** Added strict runtime validation in `printArray` and sort functions. Added `static_assert` compile-time checks for array template sizes.
 - **Design improvements:** Unified sorting algorithm logic for array and vectors. Standardized C++17 build configurations.
-- **Technical debt removed:** Duplicated sorting logic and print logic removed. Cleaned up missing types.
+- **Technical debt removed:** Duplicated sorting logic and print logic removed. Cleaned up missing types. Implicit type warnings resolved.
 - **Remaining recommendations:** Consider modularizing tests into an external testing framework (e.g., GTest or Catch2) instead of testing directly in `main()` functions.
-- **Overall project health score (0–100):** 95
+- **Overall project health score (0–100):** 98
 - **Priority list of future improvements:**
   1. Integrate a dedicated testing framework (e.g., Google Test).
   2. Separate the main driver code from the implementation details (i.e. separate `.h` and `.cpp` files).
